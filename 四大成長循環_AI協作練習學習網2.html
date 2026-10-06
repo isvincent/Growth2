@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四大思維框架 × AI 角色</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F2EC; --panel:#FBFAF6; --ink:#1B2233; --mute:#6A7180; --line:#E2E0D6;
+  --ai:#4B40A8; --ai-tint:#EDEBFA; --ai-line:#D8D3F3;
+  --f1:#B0760F; --f1-tint:#F7EED8; --f1-soft:#FBF6EA;
+  --f2:#0E7C66; --f2-tint:#DCEFE9; --f2-soft:#ECF6F2;
+  --f3:#39539E; --f3-tint:#E0E6F3; --f3-soft:#EFF2F9;
+  --f4:#A93567; --f4-tint:#F3DCE7; --f4-soft:#FAEEF3;
+  --hue:var(--f1); --hue-tint:var(--f1-tint); --hue-soft:var(--f1-soft);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:"Noto Sans TC",system-ui,sans-serif; font-weight:400;
+  line-height:1.75; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(var(--line) 0.8px, transparent 0.8px);
+  background-size:26px 26px;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+.serif{font-family:"Noto Serif TC",serif}
+.mono{font-family:"Space Grotesk",sans-serif;font-feature-settings:"tnum"}
+
+/* ---------- hero ---------- */
+header{padding:64px 0 30px}
+.eyebrow{font-family:"Space Grotesk",sans-serif;letter-spacing:.32em;text-transform:uppercase;
+  font-size:12px;color:var(--mute);font-weight:500;margin-bottom:18px}
+h1.title{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(34px,6vw,58px);
+  line-height:1.12;letter-spacing:.01em}
+h1.title .x{color:var(--mute);font-weight:600;margin:0 .15em}
+.sub{font-size:clamp(15px,2.2vw,18px);color:var(--mute);max-width:46em;margin-top:18px;font-weight:500}
+.intro{margin-top:22px;max-width:50em;font-size:15.5px;line-height:1.95;color:#3a4150}
+
+/* ---------- overview rails ---------- */
+.overview{margin:40px 0 8px;display:grid;gap:14px}
+.ovhint{font-family:"Space Grotesk",sans-serif;font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--mute);margin-bottom:2px}
+.rail{display:flex;align-items:center;gap:0;background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:14px 18px;cursor:pointer;text-align:left;width:100%;
+  transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;position:relative;overflow:hidden}
+.rail:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.rail::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--rh)}
+.rail:hover{transform:translateX(4px);box-shadow:0 8px 22px -14px rgba(27,34,51,.4);border-color:var(--rh)}
+.rail .rn{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;color:var(--rh);
+  width:34px;flex:0 0 34px}
+.rail .stages{display:flex;align-items:center;flex:1;gap:0;flex-wrap:wrap}
+.rail .stg{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(15px,2.4vw,19px);white-space:nowrap}
+.rail .arr{color:var(--rh);margin:0 12px;font-weight:700;opacity:.7}
+.rail .tag{margin-left:auto;font-size:12.5px;color:var(--mute);font-weight:500;white-space:nowrap;padding-left:14px}
+.rail .go{color:var(--rh);font-weight:700;font-size:18px;margin-left:14px;transition:transform .2s}
+.rail:hover .go{transform:translateX(3px)}
+
+/* ---------- sticky tabs ---------- */
+.tabs{position:sticky;top:0;z-index:30;background:rgba(243,242,236,.9);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);margin-top:46px}
+.tabsrow{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:none}
+.tabsrow::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);border-radius:999px;
+  padding:9px 17px;cursor:pointer;font-family:"Noto Sans TC";font-weight:700;font-size:14px;color:var(--mute);
+  transition:all .2s ease;white-space:nowrap}
+.tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--td);margin-right:8px;vertical-align:1px}
+.tab:hover{color:var(--ink);border-color:var(--td)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* ---------- detail panel ---------- */
+.panel{padding:34px 0 70px}
+.phead{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:8px}
+.pkicker{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;color:var(--hue)}
+.ptitle{font-family:"Noto Serif TC",serif;font-weight:900;font-size:clamp(26px,4.4vw,38px);line-height:1.15}
+.ptag{display:inline-block;font-size:13px;font-weight:700;color:var(--hue);background:var(--hue-tint);
+  border-radius:999px;padding:5px 14px;margin-top:6px}
+.pdesc{color:#3a4150;max-width:54em;margin-top:14px;font-size:15.5px;line-height:1.95}
+
+/* big stage flow (signature) */
+.flow{display:flex;align-items:stretch;gap:0;margin:30px 0 10px;flex-wrap:wrap}
+.fnode{flex:1 1 0;min-width:150px;background:var(--panel);border:1.5px solid var(--line);
+  border-radius:16px;padding:18px 18px 20px;cursor:pointer;position:relative;
+  transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease}
+.fnode:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.fnode .fnum{display:block;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;color:var(--hue);letter-spacing:.05em}
+.fnode .fname{display:block;font-family:"Noto Serif TC",serif;font-weight:900;font-size:25px;margin-top:5px;letter-spacing:.05em}
+.fnode .frole{display:block;font-size:12.5px;color:var(--mute);margin-top:9px;font-weight:500;line-height:1.65}
+.fnode:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(27,34,51,.5);border-color:var(--hue)}
+.fnode[aria-pressed="true"]{background:var(--hue-soft);border-color:var(--hue);box-shadow:0 10px 26px -16px var(--hue)}
+.farrow{display:flex;align-items:center;justify-content:center;color:var(--hue);font-size:22px;
+  font-weight:700;padding:0 6px;flex:0 0 auto}
+.filterbar{margin:6px 0 26px;font-size:13px;color:var(--mute);display:flex;align-items:center;gap:12px;flex-wrap:wrap;min-height:24px}
+.clear{border:1px solid var(--hue);color:var(--hue);background:transparent;border-radius:999px;
+  padding:4px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:"Noto Sans TC"}
+.clear:hover{background:var(--hue-tint)}
+
+/* example cards */
+.cards{display:grid;gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 1px 0 rgba(27,34,51,.03)}
+.card .chead{padding:20px 22px 0}
+.exn{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;color:var(--hue);letter-spacing:.08em}
+.extitle{font-family:"Noto Serif TC",serif;font-weight:700;font-size:21px;margin-top:2px;line-height:1.3}
+.scene{display:flex;gap:10px;align-items:baseline;margin:14px 22px 4px;background:var(--hue-soft);
+  border-left:4px solid var(--hue);border-radius:0 10px 10px 0;padding:11px 14px}
+.scene .lab{font-weight:700;color:var(--hue);font-size:12.5px;flex:0 0 auto;font-family:"Space Grotesk",sans-serif;letter-spacing:.06em}
+.scene .txt{font-size:14px;color:#3a4150}
+.steps{padding:14px 22px 22px;display:grid;gap:0}
+.step{display:grid;grid-template-columns:64px 1fr;gap:0;padding:16px 0;border-top:1px solid var(--line);
+  transition:opacity .25s ease, filter .25s ease}
+.step:first-child{border-top:none}
+.step .marker{display:flex;flex-direction:column;align-items:center;gap:6px}
+.step .snum{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:12px;color:#fff;
+  background:var(--hue);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.step .sname{font-family:"Noto Serif TC",serif;font-weight:700;font-size:14px;color:var(--hue);writing-mode:vertical-rl;letter-spacing:.12em}
+.step .sbody{padding-left:6px}
+.step .practice{font-size:14.5px;line-height:1.85;color:#2c333f}
+.aibox{margin-top:11px;background:var(--ai-tint);border:1px solid var(--ai-line);border-radius:12px;
+  padding:11px 14px}
+.aibox .arow{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.aibox .chip{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:11px;letter-spacing:.1em;
+  color:#fff;background:var(--ai);border-radius:6px;padding:2px 8px}
+.aibox .arole{font-weight:700;font-size:13.5px;color:var(--ai)}
+.aibox .afn{font-size:13.5px;line-height:1.8;color:#3a3a52}
+.step.dim{opacity:.32;filter:grayscale(.4)}
+.step.hot{background:linear-gradient(90deg,var(--hue-soft),transparent 70%);border-radius:12px}
+
+footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--mute);font-size:13.5px}
+footer b{color:var(--ink)}
+footer .note{max-width:52em;margin-top:8px;line-height:1.9}
+
+@media(max-width:680px){
+  .rail .tag{display:none}
+  .flow{flex-direction:column}
+  .farrow{transform:rotate(90deg);padding:4px 0}
+  .step{grid-template-columns:48px 1fr}
+  .step .sname{writing-mode:horizontal-tb;letter-spacing:.02em}
+  header{padding:44px 0 20px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Thinking Frameworks × AI</div>
+    <h1 class="title">四大思維框架<span class="x">×</span>AI 角色</h1>
+    <p class="sub" id="sub"></p>
+    <p class="intro" id="intro"></p>
+
+    <div class="overview" id="overview">
+      <div class="ovhint">四種三段式思維 · 點選展開</div>
+    </div>
+  </header>
+</div>
+
+<nav class="tabs"><div class="wrap"><div class="tabsrow" id="tabs" role="tablist"></div></div></nav>
+
+<main class="wrap">
+  <section class="panel" id="panel" aria-live="polite"></section>
+</main>
+
+<footer><div class="wrap">
+  <b>使用提醒</b>
+  <p class="note">四個框架都是三段式，著力點卻不同：<b>覺察·省思·改變</b>看的是「自己」，<b>認知·信念·行動</b>看的是「價值」，<b>任務·步驟·檢核</b>看的是「把事做完做好」，<b>目標·策略·驗證</b>看的是「成果與證據」。</p>
+  <p class="note">AI 的定位是夥伴而非代理人：讓它做整理、提問、規劃、檢核這些放大思考的事；價值判斷、最終決策與真正的產出仍由學生完成，學習才會留在學生身上。涉及心理健康的應用，AI 僅為輔助，必要時請轉介專業人員。</p>
+</div></footer>
+
+<script>
+// 四大思維框架 × AI 角色｜共用內容資料
+// 供 Word 文件與互動網頁共用，確保兩者一致
+
+const DATA = {
+  title: "四大思維框架 × AI 角色",
+  subtitle: "把三段式思維框架落地成教學現場可用的實例，並標示 AI 在每一階段扮演的角色與功能",
+  intro:
+    "同樣是「三個階段」的思維框架，背後的重點其實不同：有的著重看見與調整自己，有的著重把理解內化成行動，有的著重把任務做完做好，有的著重用證據檢驗成果。以下將四個框架各舉三個可實際操作的實例，並具體寫出 AI 在每個階段能做什麼——重點不是讓 AI 代替思考，而是讓它成為整理、提問、規劃與檢核的夥伴。",
+  frameworks: [
+    {
+      id: "f1",
+      stages: ["覺察", "省思", "改變"],
+      name: "覺察 · 省思 · 改變",
+      tagline: "後設認知與行為改變導向",
+      desc: "先看見自己原本沒注意到的現況，再深入追究背後的原因，最後把理解轉成具體的調整。AI 在這裡擔任「鏡子、追問者與陪跑教練」。",
+      examples: [
+        {
+          title: "學習習慣的調整",
+          scene: "學生覺得自己很努力，但成效不佳、又常拖延，卻說不出問題出在哪。",
+          steps: [
+            {
+              practice: "把一週的學習紀錄（時段、科目、專注程度）整理成圖表，標出最常分心與效率最低的時段，讓模糊的感覺變成看得見的事實。",
+              ai: "資料整理與模式偵測者",
+              aifn: "彙整零散紀錄、自動標示高頻分心時段與低效時段，把「我好像很拖」變成具體可指認的現象。",
+            },
+            {
+              practice: "針對看見的現象往下追問原因，分辨是動機、環境還是方法的問題，而不是停在自責。",
+              ai: "蘇格拉底式提問教練",
+              aifn: "用一連串開放式問題引導反思（「九點後效率為什麼掉？分心前通常發生什麼事？」），陪學生從現象走到原因。",
+            },
+            {
+              practice: "設計一個小到一定做得到的調整方案，並設每日檢核點，每週回顧是否有效、要不要再修。",
+              ai: "行動規劃與進度追蹤者",
+              aifn: "把目標拆成可執行的微習慣（番茄鐘、固定讀書角落），產生檢核表並追蹤連續達成天數。",
+            },
+          ],
+        },
+        {
+          title: "情緒與壓力的覺察",
+          scene: "面對段考，學生焦慮到讀不下書，但講不清楚自己在怕什麼。",
+          steps: [
+            {
+              practice: "用簡短的情緒日記，每天記下心情與當下情境，累積一段時間後找出情緒的規律。",
+              ai: "情緒模式辨識者",
+              aifn: "從文字中辨識情緒詞與觸發情境，回饋「這週焦慮多半出現在數學作業前」這類可被看見的線索。",
+            },
+            {
+              practice: "練習把「事實」和「想法」分開，檢視自己是否落入「我一定考不好」這類災難化思考。",
+              ai: "認知重整的對話夥伴",
+              aifn: "協助辨認非理性念頭、提供替代的合理想法，引導用更平衡的角度看同一件事。",
+            },
+            {
+              practice: "選一兩個用得上的因應策略（拆解任務、呼吸練習），先在低壓情境演練再用到考前。",
+              ai: "策略設計與情境演練者",
+              aifn: "提供可操作的步驟與練習腳本。※涉及心理健康時，AI 僅為輔助，狀況明顯時應轉介輔導老師或專業人員。",
+            },
+          ],
+        },
+        {
+          title: "教師的教學反思",
+          scene: "老師覺得課上得普通，但說不上來該調整什麼。",
+          steps: [
+            {
+              practice: "把一節課的錄音轉成逐字稿，看見師生發言比例、提問落在哪些認知層次，呈現課堂的真實樣貌。",
+              ai: "課堂語料分析者",
+              aifn: "計算教師與學生發言占比、依布魯姆認知層次分類提問，把感覺化為可檢視的數據。",
+            },
+            {
+              practice: "對照數據思考落差：是不是提問多停在記憶層次、學生發言空間不足？",
+              ai: "對照框架的提問者",
+              aifn: "指出數據與教學目標的落差，提出可深究的問題，協助老師看見盲點而非提供標準答案。",
+            },
+            {
+              practice: "重新設計提問序列與分組活動，下一節課後再用同樣方式檢核是否真的改善。",
+              ai: "教學設計協作者",
+              aifn: "草擬分層提問、規劃討論活動，並建立可重複比較的觀課指標。",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "f2",
+      stages: ["認知", "信念", "行動"],
+      name: "認知 · 信念 · 行動",
+      tagline: "價值內化導向（呼應 SDGs 探究）",
+      desc: "從理解事實，到形成自己真正相信的立場，再把信念轉成具體行動。AI 在這裡擔任「知識策展者、價值澄清的對話者與行動設計顧問」，但價值判斷始終由學生自己做。",
+      examples: [
+        {
+          title: "永續發展議題探究（SDG 12 責任消費與生產）",
+          scene: "高中生想做食物浪費的探究，但只停在「浪費不好」的口號。",
+          steps: [
+            {
+              practice: "建立議題全貌：蒐集在地與全球的數據、案例與不同立場，弄清楚問題到底有多大、卡在哪。",
+              ai: "議題知識策展者",
+              aifn: "彙整可信來源、整理關鍵數據（如台灣每年剩食量）與正反觀點，快速搭起認知地基。",
+            },
+            {
+              practice: "釐清自己的價值立場：在「方便」與「減少浪費」之間，我真正看重的是什麼？為什麼？",
+              ai: "價值澄清的對話者",
+              aifn: "呈現多方立場與兩難情境讓學生思辨，協助說清楚理由，但不替學生下結論。",
+            },
+            {
+              practice: "把信念轉成校園裡做得到的行動，例如剩食地圖、班級減廢挑戰，並設計成果評估方式。",
+              ai: "行動方案設計顧問",
+              aifn: "協助把抽象信念具體化為可執行專案、規劃分工與時程，並設計可衡量的成效指標。",
+            },
+          ],
+        },
+        {
+          title: "理財素養",
+          scene: "學生覺得理財是大人的事，零用錢花完就算了。",
+          steps: [
+            {
+              practice: "用生活化例子理解複利、通膨與風險分散，建立基本的金錢知識。",
+              ai: "概念轉譯者",
+              aifn: "把抽象財金概念換成貼近生活的比喻與例子，並可即時回答延伸提問。",
+            },
+            {
+              practice: "透過情境模擬建立「延遲享樂、長期累積」的價值判斷，而非被即時消費牽著走。",
+              ai: "情境模擬器",
+              aifn: "模擬不同消費與儲蓄選擇的長期結果，讓學生在後果中形成自己的判準。",
+            },
+            {
+              practice: "制定個人零用錢分配與小額儲蓄計畫，並實際執行一段時間。",
+              ai: "計畫共同規劃者",
+              aifn: "協助分配比例、設定可達成的儲蓄目標，並提供定期檢視提醒。",
+            },
+          ],
+        },
+        {
+          title: "媒體識讀與假訊息辨識",
+          scene: "班群常轉傳來路不明的訊息，學生不太分得出真假。",
+          steps: [
+            {
+              practice: "解析一則爭議訊息的來源、證據與操弄手法，建立查核的基本知識。",
+              ai: "訊息拆解分析者",
+              aifn: "逐項檢視來源可信度、證據強弱與常見話術，示範查核的思路。",
+            },
+            {
+              practice: "建立「先查證、再轉傳」的責任意識，把查核變成自己的習慣與態度。",
+              ai: "反思引導者",
+              aifn: "用提問凸顯轉傳的影響與責任，協助學生形成自己的判斷準則。",
+            },
+            {
+              practice: "製作一張查核圖卡並在班群分享，用行動影響身邊的人。",
+              ai: "產出檢視與精修者",
+              aifn: "檢查圖卡論證是否嚴謹、用語是否中立，協助把內容修得更清楚有力。",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "f3",
+      stages: ["任務", "步驟", "檢核"],
+      name: "任務 · 步驟 · 檢核",
+      tagline: "專案執行導向",
+      desc: "先把要做的事講清楚，再拆成可執行的步驟，最後逐項把關品質。AI 在這裡擔任「需求釐清者、任務拆解者與品質檢核者」，但思考與決策仍留給學生。",
+      examples: [
+        {
+          title: "專題報告製作",
+          scene: "學生拿到一個太大的題目，不知道從何下手。",
+          steps: [
+            {
+              practice: "把模糊題目聚焦成一個可研究的問題，界定範圍與最終要產出什麼。",
+              ai: "需求聚焦者",
+              aifn: "透過提問收斂題目、釐清研究問題與產出形式，避免做得又散又大。",
+            },
+            {
+              practice: "把大任務拆成查資料、訪談、分析、製圖、簡報等里程碑，並排出時程。",
+              ai: "任務拆解與排程者",
+              aifn: "產生工作分解與時間表、標出彼此的先後依賴，讓進度看得見。",
+            },
+            {
+              practice: "依評分規準逐項檢查論證、引用與格式，按建議修到合格。",
+              ai: "規準檢核者",
+              aifn: "對照 rubric 指出未達標之處並給具體修改方向，但不代寫內容。",
+            },
+          ],
+        },
+        {
+          title: "程式專案開發（C / C++）",
+          scene: "學生要寫一個有點規模的程式作業，常一開始就卡住。",
+          steps: [
+            {
+              practice: "先釐清程式要解決什麼問題、輸入與輸出規格各是什麼。",
+              ai: "需求與規格釐清者",
+              aifn: "協助把題意整理成明確的輸入、輸出與限制條件，先想清楚再動手。",
+            },
+            {
+              practice: "把程式分解成模組（演算法設計、函式撰寫、測試），逐步完成，自己保留思考空間。",
+              ai: "結構拆解的引導者",
+              aifn: "引導切分模組與設計流程；以提示和提問代替直接給程式碼，保留學習價值。",
+            },
+            {
+              practice: "設計測試案例、檢查邊界條件與程式風格，理解錯誤訊息後自行修正。",
+              ai: "測試與除錯協作者",
+              aifn: "協助列出測試案例、解釋編譯與執行錯誤的成因，引導學生自己找出 bug。",
+            },
+          ],
+        },
+        {
+          title: "校園活動籌辦（圖書館導覽）",
+          scene: "要辦一場新生圖書館導覽，事情多又雜，容易漏東漏西。",
+          steps: [
+            {
+              practice: "先定下活動目標與「怎樣算成功」的指標（參與人數、體驗滿意度）。",
+              ai: "目標釐清者",
+              aifn: "協助把活動目的寫成可衡量的成功指標，讓後續籌備有方向。",
+            },
+            {
+              practice: "產出籌備清單與時程：場地、宣傳、人力、物資，誰在什麼時候做什麼。",
+              ai: "籌備清單與時程產生者",
+              aifn: "依活動規模生成待辦清單與甘特圖，標示負責人與截止時間。",
+            },
+            {
+              practice: "活動前用檢核表逐項確認，活動後整理回饋問卷，作為下次改進依據。",
+              ai: "檢核與回饋彙整者",
+              aifn: "提供行前檢核表、活動後自動彙整問卷結果並摘要重點與待改善項。",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "f4",
+      stages: ["目標", "策略", "驗證"],
+      name: "目標 · 策略 · 驗證",
+      tagline: "成果管理導向",
+      desc: "先設定一個可衡量的目標，再規劃達成它的策略，最後用證據檢驗成效並回頭修正。AI 在這裡擔任「目標具體化者、策略規劃者與成效分析者」。",
+      examples: [
+        {
+          title: "考試準備計畫",
+          scene: "學生說「這次想考好」，但沒有可操作的計畫。",
+          steps: [
+            {
+              practice: "把「考好」變成可測量的目標，例如數學從 70 分提升到 85 分。",
+              ai: "目標具體化者",
+              aifn: "協助把模糊願望轉成明確、可衡量、有期限的目標，並拆出階段里程碑。",
+            },
+            {
+              practice: "依弱點分析配置複習資源與時間，建立錯題本與複習節奏。",
+              ai: "策略與資源配置者",
+              aifn: "從過往表現找出弱點、推薦練習與分配時間，設計間隔複習的節奏。",
+            },
+            {
+              practice: "用模擬測驗追蹤進步曲線，依結果決定下一步要加強什麼。",
+              ai: "成效分析與回饋者",
+              aifn: "分析答題數據、呈現進步趨勢，指出仍待補強的單元並回饋調整建議。",
+            },
+          ],
+        },
+        {
+          title: "圖書館閱讀推廣",
+          scene: "想提升學生借閱率，但不確定哪種推廣方式真的有效。",
+          steps: [
+            {
+              practice: "設定本學期的具體目標，例如借閱率或活動參與率要達到多少。",
+              ai: "指標設定協作者",
+              aifn: "協助把推廣願景轉成可追蹤的數據目標與基準線。",
+            },
+            {
+              practice: "規劃推廣組合：主題書展、社群限動文案、班級閱讀挑戰等多管齊下。",
+              ai: "推廣策略規劃者",
+              aifn: "依主題與受眾產生文案、活動點子與排程，組成一套完整推廣方案。",
+            },
+            {
+              practice: "用借閱數據與問卷檢驗成效，找出最有效的形式並保留下來。",
+              ai: "成效驗證分析者",
+              aifn: "比對活動前後的借閱與回饋數據，分析哪種形式成效最好，作為下次依據。",
+            },
+          ],
+        },
+        {
+          title: "自主學習計畫（18 週）",
+          scene: "學生有興趣卻發散，計畫常虎頭蛇尾。",
+          steps: [
+            {
+              practice: "把興趣收斂成一個明確、學期結束時拿得出成果的學習目標。",
+              ai: "主題收斂引導者",
+              aifn: "用提問幫學生縮小題目、確認可行性，把興趣轉成具體的學習成果目標。",
+            },
+            {
+              practice: "規劃 18 週的學習路徑：每週要學什麼、用什麼資源、產出什麼。",
+              ai: "學習路徑規劃者",
+              aifn: "生成週次計畫、推薦資源並安排循序漸進的學習節奏與每週產出。",
+            },
+            {
+              practice: "每週反思檢核、期末以成果展現驗收，並彙整成完整的學習歷程。",
+              ai: "歷程彙整與檢核者",
+              aifn: "提供每週反思提問、追蹤完成度，並協助把過程整理成學習歷程檔案。",
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+</script>
+<script>
+const HUE=["f1","f2","f3","f4"];
+const sub=document.getElementById("sub"), intro=document.getElementById("intro");
+sub.textContent=DATA.subtitle; intro.textContent=DATA.intro;
+
+/* ---- overview rails ---- */
+const ov=document.getElementById("overview");
+DATA.frameworks.forEach((f,i)=>{
+  const b=document.createElement("button");
+  b.className="rail"; b.style.setProperty("--rh",`var(--${f.id})`);
+  b.setAttribute("aria-label",`框架 ${i+1}：${f.name}`);
+  const stg=f.stages.map(s=>`<span class="stg">${s}</span>`).join('<span class="arr">→</span>');
+  b.innerHTML=`<span class="rn mono">0${i+1}</span><span class="stages">${stg}</span>`+
+              `<span class="tag">${f.tagline}</span><span class="go">→</span>`;
+  b.addEventListener("click",()=>{select(i);document.querySelector(".tabs").scrollIntoView({block:"start"});});
+  ov.appendChild(b);
+});
+
+/* ---- tabs ---- */
+const tabsEl=document.getElementById("tabs");
+DATA.frameworks.forEach((f,i)=>{
+  const t=document.createElement("button");
+  t.className="tab"; t.setAttribute("role","tab"); t.id="tab"+i;
+  t.style.setProperty("--td",`var(--${f.id})`);
+  t.innerHTML=`<span class="dot"></span>框架${i+1}　${f.name}`;
+  t.addEventListener("click",()=>select(i));
+  tabsEl.appendChild(t);
+});
+
+const panel=document.getElementById("panel");
+let cur=-1, activeStage=-1;
+
+function setHue(id){
+  document.documentElement.style.setProperty("--hue",`var(--${id})`);
+  document.documentElement.style.setProperty("--hue-tint",`var(--${id}-tint)`);
+  document.documentElement.style.setProperty("--hue-soft",`var(--${id}-soft)`);
+}
+
+function select(i){
+  if(i===cur) return;
+  cur=i; activeStage=-1;
+  const f=DATA.frameworks[i];
+  setHue(f.id);
+  [...tabsEl.children].forEach((t,k)=>t.setAttribute("aria-selected",k===i?"true":"false"));
+  render(f);
+}
+
+function render(f){
+  const flow=f.stages.map((s,k)=>{
+    // pull each example's AI role for this stage to preview on the node
+    const node=`<button class="fnode" data-stage="${k}" aria-pressed="false" aria-label="聚焦階段：${s}">
+        <span class="fnum mono">STAGE 0${k+1}</span>
+        <span class="fname">${s}</span>
+        <span class="frole">點選聚焦此階段，看三個實例怎麼做、AI 做什麼</span>
+      </button>`;
+    return node + (k<f.stages.length-1?'<span class="farrow">→</span>':'');
+  }).join("");
+
+  const cards=f.examples.map((ex,ei)=>{
+    const steps=ex.steps.map((st,si)=>`
+      <div class="step" data-stage="${si}">
+        <div class="marker">
+          <span class="snum mono">0${si+1}</span>
+          <span class="sname">${f.stages[si]}</span>
+        </div>
+        <div class="sbody">
+          <div class="practice">${st.practice}</div>
+          <div class="aibox">
+            <div class="arow"><span class="chip mono">AI</span><span class="arole">${st.ai}</span></div>
+            <div class="afn">${st.aifn}</div>
+          </div>
+        </div>
+      </div>`).join("");
+    return `<article class="card">
+      <div class="chead"><div class="exn mono">EXAMPLE ${cur+1}-${ei+1}</div>
+        <div class="extitle">${ex.title}</div></div>
+      <div class="scene"><span class="lab">情境</span><span class="txt">${ex.scene}</span></div>
+      <div class="steps">${steps}</div>
+    </article>`;
+  }).join("");
+
+  panel.innerHTML=`
+    <div class="phead">
+      <div>
+        <div class="pkicker mono">FRAMEWORK 0${cur+1}</div>
+        <h2 class="ptitle">${f.name}</h2>
+        <span class="ptag">${f.tagline}</span>
+      </div>
+    </div>
+    <p class="pdesc">${f.desc}</p>
+    <div class="flow">${flow}</div>
+    <div class="filterbar" id="filterbar"></div>
+    <div class="cards">${cards}</div>`;
+
+  panel.querySelectorAll(".fnode").forEach(n=>{
+    n.addEventListener("click",()=>toggleStage(parseInt(n.dataset.stage)));
+  });
+}
+
+function toggleStage(k){
+  activeStage = (activeStage===k)? -1 : k;
+  const f=DATA.frameworks[cur];
+  panel.querySelectorAll(".fnode").forEach(n=>
+    n.setAttribute("aria-pressed", parseInt(n.dataset.stage)===activeStage?"true":"false"));
+  panel.querySelectorAll(".step").forEach(s=>{
+    const sk=parseInt(s.dataset.stage);
+    s.classList.toggle("dim", activeStage!==-1 && sk!==activeStage);
+    s.classList.toggle("hot", activeStage!==-1 && sk===activeStage);
+  });
+  const bar=document.getElementById("filterbar");
+  if(activeStage===-1){ bar.innerHTML=""; }
+  else{
+    bar.innerHTML=`正在聚焦階段　<b style="color:var(--hue)">${f.stages[activeStage]}</b>　—　看三個實例在這一步各自怎麼做
+      <button class="clear" id="clearbtn">顯示全部</button>`;
+    document.getElementById("clearbtn").addEventListener("click",()=>toggleStage(activeStage));
+  }
+}
+
+select(0);
+</script>
+</body>
+</html>

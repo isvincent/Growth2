@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 融入四種學習行動架構</title>
+<style>
+:root { --bg:#f7fafc; --ink:#1f2937; --muted:#64748b; --card:#ffffff; --line:#e5e7eb; }
+* { box-sizing: border-box; }
+body { margin:0; font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif; background:linear-gradient(135deg,#eef7ff,#fff7ed 45%,#f4f0ff); color:var(--ink); }
+.hero { padding:56px 24px 28px; text-align:center; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; inset:-80px auto auto -80px; width:220px; height:220px; border-radius:50%; background:#bfdbfe99; filter:blur(8px); }
+.hero h1 { margin:0 auto 14px; max-width:980px; font-size:clamp(2rem,5vw,4rem); line-height:1.12; letter-spacing:-.04em; }
+.hero p { max-width:760px; margin:0 auto; font-size:1.08rem; color:var(--muted); line-height:1.8; }
+.toolbar { position:sticky; top:0; z-index:10; backdrop-filter:blur(14px); background:rgba(255,255,255,.78); border-block:1px solid var(--line); padding:14px 18px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.toolbar input { width:min(360px,100%); border:1px solid var(--line); border-radius:999px; padding:12px 16px; font-size:1rem; outline:none; }
+.filter-btn, .reset-btn { border:0; border-radius:999px; padding:10px 14px; background:#111827; color:white; cursor:pointer; font-weight:700; box-shadow:0 8px 18px rgba(15,23,42,.12); }
+.filter-btn { background:#fff; color:#334155; border:1px solid var(--line); }
+.filter-btn.active { background:#111827; color:#fff; }
+main { max-width:1180px; margin:auto; padding:28px 20px 70px; }
+.flow { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:10px 0 34px; }
+.flow-card { background:var(--card); border:1px solid var(--line); border-top:6px solid var(--accent); border-radius:20px; padding:18px; box-shadow:0 10px 25px rgba(15,23,42,.08); }
+.flow-card strong { display:block; font-size:1.1rem; margin-bottom:8px; }
+.flow-card span { color:var(--muted); }
+.framework-section { margin:30px 0; padding:22px; border-radius:28px; background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.9); box-shadow:0 20px 50px rgba(15,23,42,.08); }
+.section-title { border-left:8px solid var(--accent); padding-left:18px; margin-bottom:18px; }
+.badge { display:inline-block; background:var(--accent); color:white; padding:5px 10px; border-radius:999px; font-size:.82rem; font-weight:800; }
+.section-title h2 { margin:10px 0 6px; font-size:clamp(1.45rem,3vw,2.2rem); }
+.section-title p { color:var(--muted); margin:0; }
+.examples-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.example-card { background:var(--card); border:1px solid var(--line); border-radius:22px; padding:18px; min-height:320px; box-shadow:0 10px 26px rgba(15,23,42,.07); transition:.25s transform,.25s box-shadow; }
+.example-card:hover { transform:translateY(-4px); box-shadow:0 18px 35px rgba(15,23,42,.13); }
+.example-head { display:flex; align-items:center; gap:10px; }
+.num { flex:0 0 34px; height:34px; border-radius:50%; display:grid; place-items:center; background:var(--accent); color:white; font-weight:900; }
+h3 { margin:0; font-size:1.18rem; }
+p { line-height:1.75; }
+p strong { display:inline-block; margin-right:8px; color:var(--accent); }
+.chips { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.chips span { background:#f1f5f9; color:#334155; padding:7px 9px; border-radius:12px; font-size:.9rem; }
+details { background:#f8fafc; border-radius:14px; padding:10px 12px; }
+summary { cursor:pointer; font-weight:800; color:#334155; }
+.hidden { display:none !important; }
+.footer-panel { margin-top:34px; background:#111827; color:#e5e7eb; border-radius:24px; padding:24px; }
+.footer-panel h2 { margin-top:0; color:#fff; }
+.footer-panel li { margin:8px 0; line-height:1.7; }
+@media (max-width:900px) { .flow,.examples-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:640px) { .flow,.examples-grid { grid-template-columns:1fr; } .toolbar { justify-content:flex-start; overflow:auto; } }
+@media print { .toolbar { display:none; } body { background:white; } .framework-section,.example-card { box-shadow:none; break-inside:avoid; } }
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>AI 融入四種學習行動架構</h1>
+  <p>以「人→AI→人」為核心，將 AI 作為協作、檢查、找錯誤、修正與建議的學習夥伴。每個架構提供 3 個可直接改造成課堂活動、學習單或教師研習案例的實例。</p>
+</header>
+<nav class="toolbar" aria-label="篩選工具">
+  <input id="search" type="search" placeholder="搜尋情境、AI角色或功能，例如：錯題、閱讀、專題">
+  <button class="reset-btn" data-filter="all">全部顯示</button>
+  <button class="filter-btn" data-filter="0">覺察、省思、改變</button><button class="filter-btn" data-filter="1">認知、信念、行動</button><button class="filter-btn" data-filter="2">任務、步驟、檢核</button><button class="filter-btn" data-filter="3">目標、策略、驗證</button>
+</nav>
+<main>
+  <section class="flow" aria-label="架構總覽"><div class="flow-card" style="--accent:#2B6CB0"><strong>覺察、省思、改變 </strong><span>3 個實例</span></div><div class="flow-card" style="--accent:#7B341E"><strong>認知、信念、行動 </strong><span>3 個實例</span></div><div class="flow-card" style="--accent:#2F855A"><strong>任務、步驟、檢核 </strong><span>3 個實例</span></div><div class="flow-card" style="--accent:#805AD5"><strong>目標、策略、驗證 </strong><span>3 個實例</span></div></section>
+  
+    <section class="framework-section" id="fw-0" style="--accent:#2B6CB0">
+      <div class="section-title">
+        <span class="badge">架構 1</span>
+        <h2>覺察、省思、改變</h2>
+        <p>從發現問題到調整行為，讓學生學會看見自己。</p>
+      </div>
+      <div class="examples-grid">
+        <article class="example-card" data-framework="0" data-keywords="學習情緒溫度計 學生在課前用 1 分鐘記錄今天的學習狀態，例如專注度、心情、困難點。 情緒整理員、問題分類員、反思提問者。">
+          <div class="example-head"><span class="num">1</span><h3>學習情緒溫度計</h3></div>
+          <p><strong>情境</strong>學生在課前用 1 分鐘記錄今天的學習狀態，例如專注度、心情、困難點。</p>
+          <p><strong>人→AI→人</strong>人：學生先寫下感受與原因；AI：協助分類情緒、辨識可能壓力來源；人：學生選擇一個可執行的小調整。</p>
+          <div class="chips"><span>情緒整理員、問題分類員、反思提問者。</span><span>自動歸納心情關鍵字、提出 3 個省思問題、提供低風險調整建議。</span></div>
+          <details><summary>可產出成果</summary><p>今日學習狀態卡：我覺察到的是、我想到的原因、我接下來要改變的一件事。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="0" data-keywords="考後錯題反思診斷 段考或小考後，學生針對錯題分析錯誤類型，而不是只看分數。 錯誤分析師、學習診斷助教。">
+          <div class="example-head"><span class="num">2</span><h3>考後錯題反思診斷</h3></div>
+          <p><strong>情境</strong>段考或小考後，學生針對錯題分析錯誤類型，而不是只看分數。</p>
+          <p><strong>人→AI→人</strong>人：學生輸入錯題、原答案與自己的想法；AI：判斷錯誤可能屬於概念不清、粗心、題意誤讀或策略不當；人：學生確認並訂出修正方法。</p>
+          <div class="chips"><span>錯誤分析師、學習診斷助教。</span><span>錯因分類、同類題提醒、補救練習建議、避免直接給答案。</span></div>
+          <details><summary>可產出成果</summary><p>錯題省思單：錯在哪裡、為什麼會錯、下次如何避免。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="0" data-keywords="人際互動事件回顧 學生遇到同儕衝突或合作不順時，練習用客觀方式回顧事件。 中立傾聽者、觀點轉換教練。">
+          <div class="example-head"><span class="num">3</span><h3>人際互動事件回顧</h3></div>
+          <p><strong>情境</strong>學生遇到同儕衝突或合作不順時，練習用客觀方式回顧事件。</p>
+          <p><strong>人→AI→人</strong>人：學生先描述事件；AI：協助區分事實、感受、推測與需求；人：學生選擇較合宜的溝通行動。</p>
+          <div class="chips"><span>中立傾聽者、觀點轉換教練。</span><span>協助把情緒化語句改成具體描述、提供不同角色可能觀點、生成溝通句型。</span></div>
+          <details><summary>可產出成果</summary><p>溝通修正稿：我觀察到、我感受到、我希望、我可以怎麼做。</p></details>
+        </article>
+        </div>
+    </section>
+    
+    <section class="framework-section" id="fw-1" style="--accent:#7B341E">
+      <div class="section-title">
+        <span class="badge">架構 2</span>
+        <h2>認知、信念、行動</h2>
+        <p>從「我怎麼想」到「我願意怎麼做」，建立可改變的學習信念。</p>
+      </div>
+      <div class="examples-grid">
+        <article class="example-card" data-framework="1" data-keywords="成長型思維改寫練習 學生常說「我就是數學不好」或「英文背不起來」，教師引導學生改寫限制性信念。 信念改寫教練、鼓勵型回饋者。">
+          <div class="example-head"><span class="num">1</span><h3>成長型思維改寫練習</h3></div>
+          <p><strong>情境</strong>學生常說「我就是數學不好」或「英文背不起來」，教師引導學生改寫限制性信念。</p>
+          <p><strong>人→AI→人</strong>人：學生寫出自己的負向想法；AI：辨識固定型思維並提出替代說法；人：學生挑選最像自己的版本並訂出一個行動。</p>
+          <div class="chips"><span>信念改寫教練、鼓勵型回饋者。</span><span>找出限制性語句、轉換成可努力語句、搭配可執行行動。</span></div>
+          <details><summary>可產出成果</summary><p>信念轉換卡：原本想法、較有幫助的新想法、今天要做的小行動。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="1" data-keywords="媒體訊息判讀任務 學生閱讀網路文章、短影音標題或社群貼文，練習辨識立場與證據。 批判思考教練、查證提醒器。">
+          <div class="example-head"><span class="num">2</span><h3>媒體訊息判讀任務</h3></div>
+          <p><strong>情境</strong>學生閱讀網路文章、短影音標題或社群貼文，練習辨識立場與證據。</p>
+          <p><strong>人→AI→人</strong>人：學生先判斷訊息可信度；AI：提醒可能的偏誤、缺少的證據與反方觀點；人：學生修正自己的判斷並提出查證行動。</p>
+          <div class="chips"><span>批判思考教練、查證提醒器。</span><span>標示主張與證據、提出查證關鍵字、列出可能偏誤。</span></div>
+          <details><summary>可產出成果</summary><p>媒體判讀紀錄：我原本相信什麼、我發現哪些疑點、我要如何查證。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="1" data-keywords="學習策略選擇器 學生準備段考時，分辨自己是「重讀很多次」還是使用有效策略。 學習策略顧問、讀書方法比較器。">
+          <div class="example-head"><span class="num">3</span><h3>學習策略選擇器</h3></div>
+          <p><strong>情境</strong>學生準備段考時，分辨自己是「重讀很多次」還是使用有效策略。</p>
+          <p><strong>人→AI→人</strong>人：學生列出目前讀書方式；AI：分析策略屬於低效或高效，如提取練習、間隔複習、自我測驗；人：學生選定一項策略實作。</p>
+          <div class="chips"><span>學習策略顧問、讀書方法比較器。</span><span>比較不同讀書方法成效、設計 15 分鐘練習、產生自我測驗題。</span></div>
+          <details><summary>可產出成果</summary><p>讀書策略行動表：我要停止、保留、開始使用的學習方法。</p></details>
+        </article>
+        </div>
+    </section>
+    
+    <section class="framework-section" id="fw-2" style="--accent:#2F855A">
+      <div class="section-title">
+        <span class="badge">架構 3</span>
+        <h2>任務、步驟、檢核</h2>
+        <p>把大任務拆成可完成的小步驟，並用檢核提升品質。</p>
+      </div>
+      <div class="examples-grid">
+        <article class="example-card" data-framework="2" data-keywords="專題報告拆解任務 學生要完成一份跨領域報告，但不知道如何開始。 任務拆解師、進度規劃助理。">
+          <div class="example-head"><span class="num">1</span><h3>專題報告拆解任務</h3></div>
+          <p><strong>情境</strong>學生要完成一份跨領域報告，但不知道如何開始。</p>
+          <p><strong>人→AI→人</strong>人：學生先說明主題與期限；AI：拆成資料蒐集、重點整理、架構撰寫、視覺呈現、口頭報告；人：學生調整成自己的進度表。</p>
+          <div class="chips"><span>任務拆解師、進度規劃助理。</span><span>產生工作分解表、提醒先後順序、建立完成標準。</span></div>
+          <details><summary>可產出成果</summary><p>專題任務看板：待辦、進行中、已完成、需要協助。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="2" data-keywords="作文修訂檢核表 學生完成作文初稿後，透過 AI 協助檢查內容是否清楚、有層次。 寫作回饋者、錯字檢查員、結構建議者。">
+          <div class="example-head"><span class="num">2</span><h3>作文修訂檢核表</h3></div>
+          <p><strong>情境</strong>學生完成作文初稿後，透過 AI 協助檢查內容是否清楚、有層次。</p>
+          <p><strong>人→AI→人</strong>人：學生先完成初稿；AI：依立意、結構、例子、語句、錯字提出檢核；人：學生選擇要採納的修改並保留個人語氣。</p>
+          <div class="chips"><span>寫作回饋者、錯字檢查員、結構建議者。</span><span>提供分項回饋、指出不清楚段落、建議更具體例子。</span></div>
+          <details><summary>可產出成果</summary><p>作文修訂紀錄：AI 建議、我採納的修改、我保留的寫法。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="2" data-keywords="實驗操作安全檢核 自然課進行實驗前，學生先確認器材、步驟與安全注意事項。 安全提醒員、流程檢查員。">
+          <div class="example-head"><span class="num">3</span><h3>實驗操作安全檢核</h3></div>
+          <p><strong>情境</strong>自然課進行實驗前，學生先確認器材、步驟與安全注意事項。</p>
+          <p><strong>人→AI→人</strong>人：學生讀完實驗單並列出操作步驟；AI：檢查是否遺漏安全事項或變因控制；人：學生修正操作流程。</p>
+          <div class="chips"><span>安全提醒員、流程檢查員。</span><span>步驟排序、風險提示、變因與觀察重點檢核。</span></div>
+          <details><summary>可產出成果</summary><p>實驗前檢核清單：器材、步驟、安全、紀錄方式。</p></details>
+        </article>
+        </div>
+    </section>
+    
+    <section class="framework-section" id="fw-3" style="--accent:#805AD5">
+      <div class="section-title">
+        <span class="badge">架構 4</span>
+        <h2>目標、策略、驗證</h2>
+        <p>先設定目標，再選擇策略，最後用證據確認是否有效。</p>
+      </div>
+      <div class="examples-grid">
+        <article class="example-card" data-framework="3" data-keywords="英文單字四週提升計畫 學生希望四週後提升英文單字量與小考表現。 目標教練、複習排程器、測驗出題者。">
+          <div class="example-head"><span class="num">1</span><h3>英文單字四週提升計畫</h3></div>
+          <p><strong>情境</strong>學生希望四週後提升英文單字量與小考表現。</p>
+          <p><strong>人→AI→人</strong>人：學生設定具體目標；AI：規劃每日練習策略與複習節奏；人：學生每週用測驗結果驗證並調整。</p>
+          <div class="chips"><span>目標教練、複習排程器、測驗出題者。</span><span>設定 SMART 目標、產生間隔複習表、出題與錯字追蹤。</span></div>
+          <details><summary>可產出成果</summary><p>四週進步追蹤表：目標、每日策略、每週驗證數據。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="3" data-keywords="班級閱讀推動方案 導師或閱讀教師想提升學生閱讀參與度。 活動設計師、資料整理員、成效分析員。">
+          <div class="example-head"><span class="num">2</span><h3>班級閱讀推動方案</h3></div>
+          <p><strong>情境</strong>導師或閱讀教師想提升學生閱讀參與度。</p>
+          <p><strong>人→AI→人</strong>人：教師設定班級閱讀目標；AI：設計策略，如閱讀護照、主題書單、同儕推薦；人：教師用借閱量、心得品質、討論參與驗證成效。</p>
+          <div class="chips"><span>活動設計師、資料整理員、成效分析員。</span><span>產生分層書單、設計活動流程、彙整學生回饋。</span></div>
+          <details><summary>可產出成果</summary><p>閱讀推動儀表板：參與率、完成率、心得亮點、下次調整。</p></details>
+        </article>
+        
+        <article class="example-card" data-framework="3" data-keywords="自主學習成果驗證 學生進行自主學習或探究任務，需要證明自己真的學會。 探究顧問、評量規準設計者。">
+          <div class="example-head"><span class="num">3</span><h3>自主學習成果驗證</h3></div>
+          <p><strong>情境</strong>學生進行自主學習或探究任務，需要證明自己真的學會。</p>
+          <p><strong>人→AI→人</strong>人：學生提出學習目標與成果形式；AI：協助設計策略與驗證指標；人：學生用作品、測驗、說明影片或同儕回饋證明成效。</p>
+          <div class="chips"><span>探究顧問、評量規準設計者。</span><span>協助把模糊目標改成可觀察成果、建立 rubrics、提出驗證方法。</span></div>
+          <details><summary>可產出成果</summary><p>自主學習驗證單：我想達成、我如何做、我用什麼證據證明。</p></details>
+        </article>
+        </div>
+    </section>
+    
+  <section class="footer-panel">
+    <h2>教師操作提醒</h2>
+    <ol>
+      <li>先讓學生完成第一版，再請 AI 協助提問、檢核或提供建議。</li>
+      <li>要求學生保留「AI 建議」與「人的最後決定」，凸顯判斷與反思歷程。</li>
+      <li>評量重點放在修正理由、策略選擇與證據驗證，不只看 AI 產出的文字。</li>
+      <li>可用於 10 分鐘短任務、單節課活動、專題學習或自主學習歷程檔案。</li>
+    </ol>
+  </section>
+</main>
+<script>
+const buttons = document.querySelectorAll('[data-filter]');
+const sections = document.querySelectorAll('.framework-section');
+const search = document.querySelector('#search');
+let current = 'all';
+function applyFilter() {
+  const q = search.value.trim().toLowerCase();
+  sections.forEach(section => {
+    const fw = section.id.replace('fw-','');
+    let sectionVisible = current === 'all' || current === fw;
+    let anyCard = false;
+    section.querySelectorAll('.example-card').forEach(card => {
+      const text = card.innerText.toLowerCase() + ' ' + (card.dataset.keywords || '').toLowerCase();
+      const match = (!q || text.includes(q)) && sectionVisible;
+      card.classList.toggle('hidden', !match);
+      if (match) anyCard = true;
+    });
+    section.classList.toggle('hidden', !anyCard);
+  });
+  buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === current));
+}
+buttons.forEach(btn => btn.addEventListener('click', () => { current = btn.dataset.filter; applyFilter(); }));
+search.addEventListener('input', applyFilter);
+applyFilter();
+</script>
+</body>
+</html>

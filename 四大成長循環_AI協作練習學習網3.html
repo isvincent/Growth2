@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>四框架 × AI 學習設計實例集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1A1E; --panel:#15262B; --panel2:#1B3038; --line:#284049;
+    --text:#E9F0ED; --muted:#94A9A7; --faint:#6E8585;
+    --ai:#5BD0DE; --ai-deep:#2C8893;
+    --f1:#E8845B; --f2:#9498EC; --f3:#4FC2A0; --f4:#E6BB52;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Noto Sans TC",system-ui,sans-serif; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 500px at 78% -8%, rgba(91,208,222,.10), transparent 60%),
+                     radial-gradient(700px 460px at 4% 8%, rgba(232,132,91,.08), transparent 60%);
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 22px;}
+  .mono{font-family:"Space Mono",monospace;}
+
+  /* ---------- hero ---------- */
+  header.hero{padding:64px 0 30px;}
+  .eyebrow{font-family:"Space Mono",monospace; letter-spacing:.32em; text-transform:uppercase;
+    font-size:12px; color:var(--ai); margin:0 0 18px;}
+  h1.title{font-family:"Noto Serif TC",serif; font-weight:900; line-height:1.12;
+    font-size:clamp(33px,6vw,62px); margin:0 0 18px; letter-spacing:.01em;}
+  h1.title .dot{color:var(--ai);}
+  .lead{font-size:clamp(15px,2vw,18px); color:var(--muted); max-width:62ch; margin:0 0 26px;}
+  .thesis{display:flex; gap:16px; align-items:flex-start; max-width:64ch;
+    padding:18px 20px; border:1px solid var(--line); border-left:3px solid var(--ai);
+    border-radius:12px; background:linear-gradient(120deg, rgba(91,208,222,.07), transparent);}
+  .thesis .badge{font-family:"Space Mono",monospace; font-weight:700; color:var(--bg);
+    background:var(--ai); padding:3px 10px; border-radius:6px; white-space:nowrap; font-size:13px; margin-top:3px;}
+  .thesis p{margin:0; font-size:15px; color:var(--text);}
+
+  /* ---------- control bar ---------- */
+  .controls{position:sticky; top:0; z-index:30; margin-top:34px;
+    background:rgba(14,26,30,.82); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .controls .inner{display:flex; flex-wrap:wrap; gap:12px 10px; align-items:center;
+    justify-content:space-between; padding:12px 0;}
+  .tabs{display:flex; flex-wrap:wrap; gap:8px;}
+  .tab{display:flex; align-items:center; gap:9px; cursor:pointer; user-select:none;
+    border:1px solid var(--line); background:var(--panel); color:var(--muted);
+    padding:8px 14px; border-radius:999px; font-size:14px; font-weight:500;
+    transition:.22s ease;}
+  .tab .tnum{font-family:"Space Mono",monospace; font-size:12px; opacity:.85;}
+  .tab:hover{color:var(--text); border-color:var(--faint);}
+  .tab[aria-selected="true"]{color:var(--bg); font-weight:700; border-color:transparent;}
+  .tab[data-k="f1"][aria-selected="true"]{background:var(--f1);}
+  .tab[data-k="f2"][aria-selected="true"]{background:var(--f2);}
+  .tab[data-k="f3"][aria-selected="true"]{background:var(--f3);}
+  .tab[data-k="f4"][aria-selected="true"]{background:var(--f4);}
+
+  .toggle{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); cursor:pointer; user-select:none;}
+  .toggle .sw{width:46px; height:26px; border-radius:999px; background:var(--panel2);
+    border:1px solid var(--line); position:relative; transition:.22s;}
+  .toggle .sw::after{content:""; position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
+    background:var(--faint); transition:.22s;}
+  .toggle.on .sw{background:rgba(91,208,222,.25); border-color:var(--ai);}
+  .toggle.on .sw::after{left:22px; background:var(--ai); box-shadow:0 0 12px var(--ai);}
+  .toggle.on{color:var(--ai);}
+
+  /* ---------- panel ---------- */
+  main{padding:34px 0 10px;}
+  .panel[hidden]{display:none;}
+  .panel-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:14px; margin-bottom:6px;}
+  .panel-head .pno{font-family:"Space Mono",monospace; font-weight:700; font-size:26px;}
+  .panel-head h2{font-family:"Noto Serif TC",serif; font-weight:900; font-size:clamp(24px,4vw,36px); margin:0;}
+  .layer-chip{font-size:12.5px; font-family:"Space Mono",monospace; letter-spacing:.12em;
+    padding:3px 11px; border-radius:999px; border:1px solid currentColor;}
+  .apply{color:var(--muted); margin:4px 0 22px; max-width:70ch; font-size:15px;}
+
+  /* stage rail (signature) */
+  .rail{display:grid; grid-template-columns:1fr 1fr 1fr; align-items:start; gap:0;
+    margin:0 0 30px; position:relative; padding:6px 0 2px;}
+  .rail .node{display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; z-index:2;}
+  .rail .dot{width:46px; height:46px; border-radius:50%; display:grid; place-items:center;
+    font-family:"Space Mono",monospace; font-weight:700; font-size:15px; color:var(--bg);
+    box-shadow:0 0 0 6px rgba(255,255,255,.03);}
+  .rail .nlabel{margin-top:11px; font-size:17px; font-weight:700; font-family:"Noto Serif TC",serif;}
+  .rail .nstep{font-family:"Space Mono",monospace; font-size:11px; color:var(--faint); letter-spacing:.18em; margin-top:2px;}
+  .rail .bar{position:absolute; top:29px; height:2px; left:16.6%; right:16.6%; z-index:1;
+    background:linear-gradient(90deg, transparent, var(--accent) 12%, var(--accent) 88%, transparent);
+    transform-origin:left center;}
+  @media (prefers-reduced-motion:no-preference){
+    .rail.draw .bar{animation:grow .7s ease both;}
+    @keyframes grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  }
+
+  /* example cards */
+  .cards{display:grid; gap:16px;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px 20px 16px; position:relative; overflow:hidden;}
+  .card::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--accent);}
+  @media (prefers-reduced-motion:no-preference){
+    .card{opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease;}
+    .card.in{opacity:1; transform:none;}
+  }
+  .card .ex-no{font-family:"Space Mono",monospace; font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.1em;}
+  .card h3{font-family:"Noto Serif TC",serif; font-weight:700; font-size:20px; margin:2px 0 4px;}
+  .scenario{color:var(--muted); font-size:13.5px; margin:0 0 16px;}
+
+  .lane{display:grid; grid-template-columns:84px 1fr 1fr; gap:14px; align-items:stretch;
+    padding:13px 0; border-top:1px dashed var(--line);}
+  .lane .stg{display:flex; flex-direction:column; gap:5px;}
+  .lane .stg b{font-family:"Noto Serif TC",serif; font-size:16px; color:var(--accent);}
+  .lane .stg .ix{font-family:"Space Mono",monospace; font-size:10px; color:var(--faint);}
+  .seg{border-radius:10px; padding:11px 13px; font-size:13.6px; transition:.25s ease; border:1px solid transparent;}
+  .seg .tag{display:block; font-family:"Space Mono",monospace; font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; margin-bottom:5px;}
+  .seg.human{background:var(--panel2); color:var(--text);}
+  .seg.human .tag{color:var(--faint);}
+  .seg.ai{background:rgba(91,208,222,.08); color:#D8F4F7; border-color:rgba(91,208,222,.22);}
+  .seg.ai .tag{color:var(--ai);}
+
+  .roles{display:flex; flex-wrap:wrap; gap:7px; margin-top:15px; padding-top:14px; border-top:1px solid var(--line);}
+  .roles .rl-label{font-size:11px; font-family:"Space Mono",monospace; color:var(--ai); letter-spacing:.12em; align-self:center; margin-right:2px;}
+  .chip{font-size:12px; padding:4px 11px; border-radius:999px; background:rgba(91,208,222,.10);
+    border:1px solid rgba(91,208,222,.28); color:#CDEFF3;}
+
+  /* AI-focus mode */
+  body.aifocus .seg.human{opacity:.42; filter:saturate(.6);}
+  body.aifocus .seg.ai{border-color:var(--ai); box-shadow:0 0 0 1px rgba(91,208,222,.25), 0 6px 22px rgba(91,208,222,.10);}
+  body.aifocus .seg.ai{background:rgba(91,208,222,.14);}
+
+  /* footer */
+  footer{border-top:1px solid var(--line); margin-top:46px; padding:34px 0 60px;}
+  footer h4{font-family:"Noto Serif TC",serif; font-size:18px; margin:0 0 14px;}
+  footer ol{margin:0; padding-left:0; list-style:none; counter-reset:r; display:grid; gap:10px; max-width:78ch;}
+  footer li{counter-increment:r; position:relative; padding-left:34px; color:var(--muted); font-size:14px;}
+  footer li::before{content:counter(r); position:absolute; left:0; top:1px; width:22px; height:22px;
+    border-radius:50%; background:var(--panel2); border:1px solid var(--line); color:var(--ai);
+    font-family:"Space Mono",monospace; font-size:12px; display:grid; place-items:center;}
+  .sig{margin-top:26px; font-size:12px; color:var(--faint); font-family:"Space Mono",monospace; letter-spacing:.06em;}
+
+  @media (max-width:720px){
+    .lane{grid-template-columns:1fr; gap:8px;}
+    .lane .stg{flex-direction:row; align-items:center; gap:10px;}
+    .rail .dot{width:40px;height:40px;font-size:13px;}
+    .rail .bar{top:26px;}
+    .thesis{flex-direction:column;}
+  }
+  :focus-visible{outline:2px solid var(--ai); outline-offset:3px; border-radius:6px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Framework × AI · Teaching Toolkit</p>
+      <h1 class="title" id="ttl"></h1>
+      <p class="lead" id="lead"></p>
+      <div class="thesis">
+        <span class="badge">AI = 夥伴</span>
+        <p id="thesis"></p>
+      </div>
+    </header>
+  </div>
+
+  <div class="controls">
+    <div class="wrap">
+      <div class="inner">
+        <div class="tabs" id="tabs" role="tablist" aria-label="選擇框架"></div>
+        <div class="toggle" id="toggle" role="switch" aria-checked="false" tabindex="0">
+          <span class="sw" aria-hidden="true"></span><span class="tg-label">聚焦 AI 角色</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap" id="main"></main>
+
+  <footer class="wrap">
+    <h4>使用提醒</h4>
+    <ol>
+      <li>四個框架可單獨使用，也可串接成「自我 → 態度 → 執行 → 成效」的完整學習歷程。</li>
+      <li>AI 的定位是放大覺察、深化思考、加速行動與即時回饋；判斷、選擇與行動仍由學習者主導。</li>
+      <li>涉及情緒、健康與人際的主題，AI 僅作輔助，必要時應連結教師、輔導與專業資源。</li>
+    </ol>
+    <p class="sig">點上方頁籤切換框架　·　開啟「聚焦 AI 角色」可凸顯 AI 在每一步的協助層</p>
+  </footer>
+
+<script>
+const D = {"intro":{"title":"四框架 × AI 學習設計實例集","subtitle":"四組三段式思考框架，各舉三個可直接運用的教學/學習實例，並標示 AI 在其中扮演的角色與功能。","lead":"這四個框架可以視為一條由內而外的成長路徑：從「覺察‧省思‧改變」處理自我的情意與習慣，到「認知‧信念‧行動」澄清態度與價值，再落到「任務‧步驟‧檢核」完成具體任務，最後拉高到「目標‧策略‧驗證」管理目標與成效。","thesis":"在四個框架之中，AI 始終扮演同一種底層角色——放大覺察、深化思考、加速行動、即時回饋的「學習夥伴」，而不是替學習者完成一切的「代工者」。真正的學習，仍由人主導。"},"frameworks":[{"id":"f1","no":"01","title":"覺察 · 省思 · 改變","stages":["覺察","省思","改變"],"layer":"自我 · 情意","apply":"適用於自我成長、習慣養成、情意與輔導：先看見，再思考，最後付諸行動。","examples":[{"name":"數位專注力管理","scenario":"面對念書時忍不住滑手機、注意力被切碎的困境。","steps":[{"stage":"覺察","human":"蒐集自己一週的手機/螢幕使用紀錄，並寫下使用當下的感受。","ai":"把零散紀錄整理成視覺化圖表，標出分心高峰時段，讓人「看見」真實的使用樣貌。"},{"stage":"省思","human":"誠實回應教練式提問，檢視分心當下到底在逃避什麼。","ai":"扮演教練，以不評價的提問引導，反映出分心背後的觸發點（無聊、焦慮或慣性）。"},{"stage":"改變","human":"執行專注計畫並每日回報狀況。","ai":"與學習者共同設計番茄鐘＋手機暫離方案，每天依回報動態微調並給予鼓勵。"}],"aiRoles":["數據視覺化","提問教練","計畫共創","進度陪伴"]},{"name":"學習情緒與考試焦慮","scenario":"考前容易緊張、腦中浮現負面想法、影響表現。","steps":[{"stage":"覺察","human":"每天用幾個關鍵字記錄當天心情。","ai":"彙整情緒日記，描繪一週焦慮曲線，讓人看見情緒的規律與高峰。"},{"stage":"省思","human":"對照曲線，回想焦慮高峰前自己在想什麼。","ai":"像一面鏡子，協助辨識「災難化想法」等思考偏誤，但不下診斷。"},{"stage":"改變","human":"在平時練習放鬆與正向自我對話。","ai":"提供呼吸放鬆腳本與考前正向自我對話句型，陪伴反覆練習。"}],"aiRoles":["情緒記錄分析","認知偏誤之鏡","心理技巧資源庫"]},{"name":"班級人際氛圍","scenario":"班上有同學被邊緣化，但平時不易被察覺。","steps":[{"stage":"覺察","human":"全班填寫互動關係的匿名問卷。","ai":"匿名彙整問卷，呈現平時不易察覺的互動結構與邊緣化現象。"},{"stage":"省思","human":"閱讀並討論不同位置同學的處境。","ai":"模擬「被忽略同學」的一天視角，協助全班換位思考。"},{"stage":"改變","human":"共同決議要落實的友善行動。","ai":"把討論結果轉化為具體可行的班級友善公約與小活動。"}],"aiRoles":["匿名意見彙整","觀點模擬","共識轉化"]}]},{"id":"f2","no":"02","title":"認知 · 信念 · 行動","stages":["認知","信念","行動"],"layer":"態度 · 價值","apply":"適用於議題教育、價值澄清、SDGs 與態度養成：先知道，再相信，最後做到。","examples":[{"name":"氣候變遷與永續行動（SDG 13）","scenario":"學生關心環境，卻覺得「個人做什麼都沒用」。","steps":[{"stage":"認知","human":"閱讀並提問，分辨資料中的事實與意見。","ai":"彙整多份氣候資料成議題知識地圖，協助快速建立全貌。"},{"stage":"信念","human":"誠實面對自己的無力感並回應對話。","ai":"以提問挑戰「個人無用」的迷思，協助建立「我的選擇有意義」的信念。"},{"stage":"行動","human":"選定可長期執行的減碳行動並落實。","ai":"協助估算生活碳足跡，產生可執行的行動清單與追蹤表。"}],"aiRoles":["多源資料彙整","信念對話夥伴","行動方案產生器"]},{"name":"健康飲食與身體素養","scenario":"網路飲食資訊繁雜，學生易被極端說法影響。","steps":[{"stage":"認知","human":"蒐集飲食標示與相關說法提出疑問。","ai":"翻譯營養標示與飲食研究，破解常見的飲食迷思。"},{"stage":"信念","human":"重新理解健康與身體的關係。","ai":"以實證回應極端飲食說法，建立「健康是長期照顧而非短期節食」的觀念。"},{"stage":"行動","human":"練習以多元、均衡的方式照顧自己。","ai":"協助規劃多元均衡的餐盤組合，並陪伴記錄飲食與身體感受。"}],"aiRoles":["知識翻譯","迷思釐清","均衡規劃陪伴"]},{"name":"資訊素養與假訊息辨識","scenario":"群組裡常出現可疑訊息，學生習慣未查證就轉傳。","steps":[{"stage":"認知","human":"觀察一則可疑訊息並嘗試找出破綻。","ai":"拆解假訊息常見手法（情緒煽動、移花接木、假權威）。"},{"stage":"信念","human":"把查證內化為自己的習慣與責任。","ai":"透過案例強化「轉傳前先查證」是公民責任的信念。"},{"stage":"行動","human":"在真實情境中先查證再決定是否轉傳。","ai":"作為查核助手，協助交叉比對來源、追溯原始出處。"}],"aiRoles":["手法解析","查核協作","批判思考教練"]}]},{"id":"f3","no":"03","title":"任務 · 步驟 · 檢核","stages":["任務","步驟","檢核"],"layer":"操作 · 執行","apply":"適用於專案實作、程式設計與流程管理：先確定要做什麼，再規劃怎麼做，最後檢查做得如何。","examples":[{"name":"C/C++ 程式專題開發","scenario":"要從一個模糊想法做出可運作的程式作品。","steps":[{"stage":"任務","human":"描述想做的系統與期待的功能。","ai":"把模糊需求（如「成績管理系統」）釐清成明確規格與功能清單。"},{"stage":"步驟","human":"依規劃逐一動手實作程式。","ai":"協助拆解模組、規劃開發順序，產出虛擬碼與流程圖。"},{"stage":"檢核","human":"依清單測試並修正程式。","ai":"進行程式碼審查、產生測試案例，提醒邊界條件與例外處理。"}],"aiRoles":["需求釐清","任務拆解","程式碼審查與測試生成"]},{"name":"18 週自主學習計畫","scenario":"學生想自主學習，卻不知如何規劃整個學期。","steps":[{"stage":"任務","human":"確立學習主題與想達成的成果。","ai":"協助探索與收斂主題，使學習目標具體可行。"},{"stage":"步驟","human":"依每週任務逐步推進學習。","ai":"生成 18 週進度與每週的具體任務安排。"},{"stage":"檢核","human":"每週回顧進度並調整。","ai":"設計每週檢核表與反思問句，協助回顧與修正方向。"}],"aiRoles":["主題探索","計畫生成","檢核與反思引導"]},{"name":"小組專題簡報製作","scenario":"小組要在期限內完成一份有說服力的簡報。","steps":[{"stage":"任務","human":"界定主題、聽眾與時長，確認核心訊息。","ai":"協助釐清簡報目標與單一核心主張。"},{"stage":"步驟","human":"分工蒐集資料並撰寫內容。","ai":"協助大綱、分鏡與資料分工，加速產出初稿。"},{"stage":"檢核","human":"預演並依回饋修正。","ai":"檢查邏輯一致、視覺一致與時間掌控，並模擬聽眾提問。"}],"aiRoles":["大綱規劃","分工協作","品質檢核與模擬問答"]}]},{"id":"f4","no":"04","title":"目標 · 策略 · 驗證","stages":["目標","策略","驗證"],"layer":"成效 · 管理","apply":"適用於學習目標管理、考試準備與研究探究：先確定要去哪，再決定怎麼去，最後檢查到了沒。","examples":[{"name":"升學考試準備","scenario":"想有效提升某科成績，卻不知從何複習起。","steps":[{"stage":"目標","human":"設定明確可衡量的目標（如某科提升到目標級分）。","ai":"協助把模糊期待轉成具體、可檢核的學習目標。"},{"stage":"策略","human":"依規劃投入複習。","ai":"診斷弱點章節，設計間隔複習與題型攻略。"},{"stage":"驗證","human":"檢視結果並回頭調整方法。","ai":"出模擬題、分析錯題型態，據此修正策略。"}],"aiRoles":["弱點診斷","策略設計","模擬出題與錯題分析"]},{"name":"英文閱讀理解提升","scenario":"讀得慢、抓不到重點，想系統性提升閱讀力。","steps":[{"stage":"目標","human":"設定一段時間內要提升的速度與正確率。","ai":"協助設定合理且可量測的閱讀目標。"},{"stage":"策略","human":"依程度持續閱讀與練習。","ai":"依程度推薦分級材料，教導略讀、抓主旨、推測詞義等策略。"},{"stage":"驗證","human":"完成測驗並檢視盲點。","ai":"設計理解測驗，追蹤進步曲線並回饋盲點。"}],"aiRoles":["適性選材","閱讀策略指導","評量與回饋"]},{"name":"科展研究專題","scenario":"有研究興趣，但研究問題與方法尚未成形。","steps":[{"stage":"目標","human":"聚焦研究問題並提出可驗證的假設。","ai":"協助收斂題目，把興趣轉成清楚的研究問題與假設。"},{"stage":"策略","human":"設計並執行實驗或調查。","ai":"協助文獻回顧、實驗設計與變因控制規劃。"},{"stage":"驗證","human":"判讀結果並反思限制。","ai":"協助整理數據、檢驗假設並提出後續反思方向。"}],"aiRoles":["文獻助手","研究設計顧問","數據分析夥伴"]}]}]};
+const HUE = {f1:"var(--f1)",f2:"var(--f2)",f3:"var(--f3)",f4:"var(--f4)"};
+
+document.getElementById("ttl").innerHTML =
+  D.intro.title.replace("×",'<span class="dot">×</span>');
+document.getElementById("lead").textContent = D.intro.lead;
+document.getElementById("thesis").textContent =
+  D.intro.thesis.replace(/^在四個框架之中，AI/,"AI");
+
+// tabs
+const tabs = document.getElementById("tabs");
+D.frameworks.forEach((f,i)=>{
+  const b=document.createElement("button");
+  b.className="tab"; b.dataset.k=f.id; b.setAttribute("role","tab");
+  b.setAttribute("aria-selected", i===0?"true":"false");
+  b.innerHTML='<span class="tnum">'+f.no+'</span>'+f.title;
+  b.onclick=()=>select(i);
+  tabs.appendChild(b);
+});
+
+const main=document.getElementById("main");
+let io=null;
+
+function render(f){
+  const accent=HUE[f.id];
+  const stageRail=f.stages.map((s,i)=>
+    '<div class="node"><div class="dot" style="background:'+accent+'">'+(i+1)+'</div>'+
+    '<div class="nlabel">'+s+'</div><div class="nstep">STEP 0'+(i+1)+'</div></div>').join("");
+
+  const cards=f.examples.map((ex,ei)=>{
+    const lanes=ex.steps.map((s,si)=>
+      '<div class="lane">'+
+        '<div class="stg"><span class="ix">0'+(si+1)+'</span><b>'+s.stage+'</b></div>'+
+        '<div class="seg human"><span class="tag">學習者做法</span>'+s.human+'</div>'+
+        '<div class="seg ai"><span class="tag">AI 協助</span>'+s.ai+'</div>'+
+      '</div>').join("");
+    const chips=ex.aiRoles.map(r=>'<span class="chip">'+r+'</span>').join("");
+    return '<article class="card" style="--accent:'+accent+'">'+
+      '<span class="ex-no">實例 0'+(ei+1)+'</span>'+
+      '<h3>'+ex.name+'</h3>'+
+      '<p class="scenario">情境：'+ex.scenario+'</p>'+
+      lanes+
+      '<div class="roles"><span class="rl-label">AI 角色</span>'+chips+'</div>'+
+    '</article>';
+  }).join("");
+
+  return '<section class="panel" style="--accent:'+accent+'">'+
+    '<div class="panel-head">'+
+      '<span class="pno" style="color:'+accent+'">'+f.no+'</span>'+
+      '<h2>'+f.title+'</h2>'+
+      '<span class="layer-chip" style="color:'+accent+'">'+f.layer+'</span>'+
+    '</div>'+
+    '<p class="apply">'+f.apply+'</p>'+
+    '<div class="rail draw" style="--accent:'+accent+'"><div class="bar"></div>'+stageRail+'</div>'+
+    '<div class="cards">'+cards+'</div>'+
+  '</section>';
+}
+
+function select(i){
+  [...tabs.children].forEach((t,j)=>t.setAttribute("aria-selected", j===i?"true":"false"));
+  main.innerHTML=render(D.frameworks[i]);
+  // re-trigger rail animation
+  const rail=main.querySelector(".rail"); rail.classList.remove("draw"); void rail.offsetWidth; rail.classList.add("draw");
+  // reveal cards
+  if(io) io.disconnect();
+  const cards=[...main.querySelectorAll(".card")];
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ cards.forEach(c=>c.classList.add("in")); return; }
+  io=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);}}),{threshold:.12});
+  cards.forEach((c,k)=>{ c.style.transitionDelay=(k*70)+"ms"; io.observe(c); });
+}
+
+// toggle
+const tg=document.getElementById("toggle");
+function flip(){ const on=document.body.classList.toggle("aifocus"); tg.classList.toggle("on",on); tg.setAttribute("aria-checked",on); }
+tg.onclick=flip;
+tg.onkeydown=(e)=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault(); flip();} };
+
+select(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四大成長循環 - AI協作練習學習網</title>
+    <style>
+        /* 基礎設定與動態漸層背景 */
+        body {
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb, #f6d365, #fda085);
+            background-size: 600% 600%;
+            animation: gradientBG 20s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            color: #333;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 2rem;
+            box-sizing: border-box;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 標題與副標題 (字體放大) */
+        h1 {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 3.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        /* 卡片網格排版 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+        }
+
+        /* 卡片設計與互動特效 */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 25px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: #2c3e50;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 彈性過渡效果 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hover 動態變化 */
+        .card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            border-color: #ff9a9e;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 光澤掃過特效 */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: all 0.75s;
+        }
+
+        .card:hover::before {
+            left: 125%;
+        }
+
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .icon {
+            transform: rotate(15deg) scale(1.2);
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            margin: 0 0 1rem 0;
+            color: #34495e;
+        }
+
+        .card p {
+            font-size: 1.3rem;
+            margin: 0;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        /* 響應式調整 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 1.3rem; }
+            .grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .card { padding: 2rem 1.5rem; }
+            .icon { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>✨ 四大成長循環 ✨<br>AI協作練習學習網</h1>
+        <p class="subtitle">請開啟喇叭，點選下方單元即可開始您的學習旅程！</p>
+        
+        <div class="grid">
+            <!-- 網頁1 -->
+            <a href="四大成長循環_AI協作練習學習網1.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">🔍</div>
+                <h2>單元一</h2>
+                <p>探索與啟蒙 (頁面 1)</p>
+            </a>
+            
+            <!-- 網頁2 -->
+            <a href="四大成長循環_AI協作練習學習網2.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">💡</div>
+                <h2>單元二</h2>
+                <p>構思與學習 (頁面 2)</p>
+            </a>
+            
+            <!-- 網頁3 -->
+            <a href="四大成長循環_AI協作練習學習網3.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">🚀</div>
+                <h2>單元三</h2>
+                <p>實踐與挑戰 (頁面 3)</p>
+            </a>
+            
+            <!-- 網頁4 -->
+            <a href="四大成長循環_AI協作練習學習網4.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">📈</div>
+                <h2>單元四</h2>
+                <p>成長與突破 (頁面 4)</p>
+            </a>
+            
+            <!-- 網頁5 -->
+            <a href="四大成長循環_AI協作練習學習網5.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">🏆</div>
+                <h2>單元五</h2>
+                <p>成果與反思 (頁面 5)</p>
+            </a>
+            
+            <!-- 網頁6 -->
+            <a href="四大成長循環_AI協作練習學習網6.html" class="card" onclick="handleClick(event, this.href)" onmouseenter="playHoverSound()">
+                <div class="icon">🌟</div>
+                <h2>單元六</h2>
+                <p>創新與循環 (頁面 6)</p>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 初始化 Web Audio API Context
+        let audioCtx;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // 監聽第一次使用者互動，以解鎖音效播放限制 (瀏覽器 Autoplay 政策)
+        document.body.addEventListener('click', initAudio, { once: true });
+        document.body.addEventListener('mousemove', initAudio, { once: true });
+
+        // Hover 聲音 (較輕柔)
+        function playHoverSound() {
+            if (!audioCtx || audioCtx.state !== 'running') return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            // 設定為正弦波，聲音柔和
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            
+            // 音量控制 (淡入淡出)
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.05);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+
+        // 點擊聲音 (較清脆響亮)
+        function playClickSound() {
+            if (!audioCtx) return;
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            // 設定為三角波，聲音較清脆
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15);
+            
+            // 音量控制
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.05);
+            gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.2);
+        }
+
+        // 攔截點擊事件以播放音效後跳轉
+        function handleClick(event, url) {
+            // 避免預設的立即跳轉
+            event.preventDefault(); 
+            
+            // 播放音效
+            initAudio();
+            playClickSound();
+            
+            // 卡片點擊視覺回饋 (縮小)
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            
+            // 延遲跳轉，確保音效能播放出來且特效可見
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>四大成長循環 × AI · 高一自主學習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E9ECF2; --surface:#FFFFFF; --surface-2:#F4F6FA;
+    --ink:#15161D; --soft:#5C6273; --line:#D9DDE6;
+    --accent:#3D5AF1; --accent-soft:#3d5af11a;
+    --c1:#0E9594; --c2:#E8743B; --c3:#3D5AF1; --c4:#B5179E;
+    --ai:#6C4AE0;
+    --zh:"Noto Sans TC",sans-serif;
+    --disp:"Sora",var(--zh); --mono:"Space Mono",monospace;
+    --r:18px; --shadow:0 1px 2px rgba(20,22,30,.05),0 18px 40px -28px rgba(20,22,30,.4);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--zh);line-height:1.65;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 1px 1px,rgba(20,22,30,.05) 1px,transparent 0);
+    background-size:26px 26px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+    background:rgba(233,236,242,.82);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:14px;height:60px}
+  .brand{font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.04em}
+  .brand b{color:var(--accent);transition:color .4s}
+  .topbar .spacer{flex:1}
+  .ai-hint{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--soft)}
+  .ai-dot{width:8px;height:8px;border-radius:50%;background:var(--ai);box-shadow:0 0 0 4px #6c4ae022}
+  @media(max-width:640px){.ai-hint{display:none}}
+
+  /* ---------- hero ---------- */
+  header.hero{padding:54px 0 26px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--accent);margin:0 0 14px;transition:color .4s}
+  h1.title{font-family:var(--disp);font-weight:800;line-height:1.08;
+    font-size:clamp(30px,5.4vw,54px);margin:0 0 18px;letter-spacing:-.01em}
+  h1.title .zh{font-family:var(--zh);font-weight:900}
+  .lead{max-width:620px;font-size:16px;color:#33373f;margin:0}
+  .principle{margin-top:22px;display:flex;gap:13px;align-items:flex-start;
+    background:linear-gradient(180deg,#fff,#fbfcfe);border:1px solid var(--line);
+    border-left:4px solid var(--ai);border-radius:14px;padding:14px 16px;max-width:640px;box-shadow:var(--shadow)}
+  .principle .badge{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;background:var(--ai);
+    padding:3px 8px;border-radius:6px;white-space:nowrap;margin-top:2px}
+  .principle p{margin:0;font-size:13.5px;color:#3a3f49}
+
+  /* ---------- module selector ---------- */
+  .selector{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:34px 0 8px}
+  @media(max-width:760px){.selector{grid-template-columns:repeat(2,1fr)}}
+  .mod-btn{position:relative;text-align:left;cursor:pointer;border:1px solid var(--line);
+    background:var(--surface);border-radius:var(--r);padding:16px 15px 15px;
+    font-family:var(--zh);color:var(--ink);transition:transform .25s,box-shadow .25s,border-color .25s;overflow:hidden}
+  .mod-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .mod-btn::before{content:"";position:absolute;left:0;top:0;height:100%;width:5px;background:var(--mc);
+    transform:scaleY(0);transform-origin:bottom;transition:transform .3s}
+  .mod-btn[aria-selected="true"]{border-color:var(--mc);box-shadow:0 14px 30px -20px var(--mc)}
+  .mod-btn[aria-selected="true"]::before{transform:scaleY(1)}
+  .mod-code{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--mc)}
+  .mod-triad{font-weight:900;font-size:16px;margin:7px 0 4px;letter-spacing:.02em}
+  .mod-tag{font-size:11.5px;color:var(--soft);line-height:1.4}
+  .mod-btn:focus-visible{outline:3px solid var(--mc);outline-offset:2px}
+
+  /* ---------- workspace ---------- */
+  .workspace{margin:14px 0 10px;animation:rise .45s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .ws-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 16px;padding:6px 2px 2px}
+  .ws-code{font-family:var(--mono);font-weight:700;font-size:30px;color:var(--accent);transition:color .4s}
+  .ws-name{font-family:var(--zh);font-weight:900;font-size:clamp(20px,3.4vw,28px)}
+  .ws-tag{font-size:14px;color:var(--accent);font-style:italic;transition:color .4s}
+  .ws-summary{max-width:680px;color:#3a3f49;font-size:14.5px;margin:8px 2px 0}
+
+  /* cycle */
+  .cycle-wrap{margin:22px 0 6px}
+  .cycle-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--soft);margin:0 0 12px;padding-left:2px}
+  .cycle{display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+  .stage{flex:1;min-width:0;position:relative;display:flex;align-items:center;justify-content:center}
+  .stage-chip{cursor:pointer;width:100%;text-align:center;border:1.5px solid var(--accent);
+    color:var(--accent);background:var(--surface);border-radius:14px;padding:13px 8px;font-weight:700;
+    font-size:15px;transition:.22s;position:relative;z-index:2}
+  .stage-chip .num{display:block;font-family:var(--mono);font-size:10px;opacity:.7;margin-bottom:3px}
+  .stage-chip:hover{background:var(--accent-soft)}
+  .stage-chip[aria-pressed="true"]{background:var(--accent);color:#fff;transform:translateY(-2px);
+    box-shadow:0 12px 24px -14px var(--accent)}
+  .stage-chip:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .arrow{flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:var(--accent);
+    font-size:20px;transition:color .4s}
+  .arrow svg{width:26px;height:26px;overflow:visible}
+  .arrow .flow{stroke-dasharray:5 6;animation:flow 1.1s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-22}}
+  .loopback{display:flex;align-items:center;gap:8px;margin-top:11px;padding-left:2px;
+    font-size:11.5px;color:var(--soft);font-family:var(--zh)}
+  .loopback .ln{flex:1;height:1px;border-top:1.5px dashed var(--line)}
+  @media(max-width:640px){
+    .cycle{flex-direction:column}
+    .stage{width:100%}
+    .arrow{flex:0 0 28px;transform:rotate(90deg)}
+  }
+
+  /* examples */
+  .examples{display:grid;grid-template-columns:1fr;gap:16px;margin-top:26px}
+  .ex{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:20px 20px 6px;box-shadow:var(--shadow);animation:rise .5s ease both}
+  .ex-head{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .ex-idx{flex:0 0 30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    font-family:var(--mono);font-weight:700;font-size:13px;color:#fff;background:var(--accent);transition:background .4s}
+  .ex-topic{font-weight:900;font-size:17px;letter-spacing:.01em}
+  .stage-row{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:start;
+    padding:11px 0;border-top:1px dashed var(--line);transition:opacity .25s}
+  .stage-row .lbl{font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:7px;color:var(--accent);transition:color .4s}
+  .stage-row .lbl::before{content:"";width:9px;height:9px;border-radius:3px;background:var(--accent);transition:background .4s}
+  .stage-row .txt{font-size:14px;color:#2c3038}
+  @media(max-width:520px){.stage-row{grid-template-columns:1fr;gap:3px}}
+
+  /* dim when a stage filter is active */
+  .workspace[data-filter="0"] .stage-row:not([data-s="0"]),
+  .workspace[data-filter="1"] .stage-row:not([data-s="1"]),
+  .workspace[data-filter="2"] .stage-row:not([data-s="2"]){opacity:.26}
+
+  .ai-panel{margin:14px -20px 0;padding:15px 20px 17px;background:linear-gradient(180deg,#faf9ff,#f6f4ff);
+    border-top:1px solid #e9e4fb;border-radius:0 0 var(--r) var(--r)}
+  .ai-panel .ai-h{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13px;color:var(--ai);margin-bottom:9px}
+  .ai-chip{font-family:var(--mono);font-size:10px;font-weight:700;background:var(--ai);color:#fff;padding:2px 7px;border-radius:5px}
+  .ai-list{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+  .ai-list li{display:flex;gap:9px;font-size:13.5px;color:#34303f}
+  .ai-list li::before{content:"";flex:0 0 6px;width:6px;height:6px;border-radius:50%;background:var(--ai);margin-top:8px}
+
+  footer{padding:34px 0 50px;color:var(--soft);font-size:12.5px;text-align:center}
+  footer .rule{height:1px;background:var(--line);margin:0 auto 18px;max-width:200px}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+  <nav class="topbar">
+    <div class="wrap">
+      <span class="brand">GROWTH<b>/</b>OS · 高一自主學習</span>
+      <span class="spacer"></span>
+      <span class="ai-hint"><span class="ai-dot"></span>AI 是夥伴，不是替你思考的人</span>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">四種成長循環 · 12 個真實情境</p>
+      <h1 class="title">把成長拆成<span class="zh">看得懂、做得到</span>的循環</h1>
+      <p class="lead">高中第一年，是練習「自己管理自己學習」的關鍵時刻。下面四組概念是四種不同的成長循環，每一組都搭配三個你真的會遇到的情境，並說明 AI 可以怎麼當你的學習夥伴。點選一個模組開始探索。</p>
+      <div class="principle">
+        <span class="badge">使用守則</span>
+        <p>AI 很擅長當「思考夥伴」與「練習對象」，但它有時會說錯、會編造資料。把它當成幫你加速、給你回饋的工具——最後的判斷、查證與決定，仍然要由你自己完成。</p>
+      </div>
+
+      <div class="selector" role="tablist" aria-label="四大成長循環"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="workspace" id="ws" role="tabpanel" tabindex="0"></section>
+  </main>
+
+  <footer>
+    <div class="rule"></div>
+    覺察省思改變 · 認知信念行動 · 任務步驟檢核 · 目標策略驗證<br>
+    四個循環串起來，就是一套屬於你自己的自主學習方法。
+  </footer>
+
+<script>
+const DATA=[
+ {code:"01",accent:"#0E9594",triad:["覺察","省思","改變"],name:"覺察 → 省思 → 改變",
+  tag:"先看見自己，才談得上成長",
+  summary:"成長從「注意到」開始：先誠實看見現況，再追問背後原因，最後做出一個小而具體的調整。",
+  ex:[
+   {t:"手機與短影音的時間黑洞",s:["發現自己每天滑短影音超過 3 小時，一抬頭就過了大半個晚上。","問自己：是無聊、逃避作業壓力，還是怕錯過群組訊息？找出真正的觸發點。","設定每日使用上限、把手機放到房間外充電，並安排運動或閱讀等替代活動。"],
+     ai:["用 AI 分析螢幕使用時間，找出最容易失控的時段。","讓 AI 用提問引導你釐清「滑手機是想逃避什麼」。","請 AI 幫你列出可替代的活動清單與每日提醒。"]},
+   {t:"上課中途就分心放空",s:["察覺自己每堂課大約 20 分鐘後就開始放空、聽不進去。","回想是睡眠不足、座位太後面，還是這科聽不懂而放棄？","調整作息、改用「主動筆記法」邊聽邊寫關鍵字，把被動聽課變成動手做。"],
+     ai:["把上課錄音請 AI 整理成重點，對照你漏掉了什麼。","讓 AI 當蘇格拉底式提問者，幫你分析分心的真正原因。","請 AI 設計適合你的專注力小訓練（如番茄鐘節奏）。"]},
+   {t:"和朋友相處時的情緒反應",s:["注意到自己對某句玩笑反應特別大、事後又後悔。","寫下當下的感受與情境，思考是哪個點真正踩到自己。","練習一個更冷靜的回應方式，下次遇到時先停三秒再說話。"],
+     ai:["用 AI 當情緒日記的整理者，看出反覆出現的情緒模式。","和 AI 角色扮演，先在安全情境練習想說的話。","請 AI 提供具體可行的情緒調節技巧（深呼吸、換句話說）。"]}
+  ]},
+ {code:"02",accent:"#E8743B",triad:["認知","信念","行動"],name:"認知 → 信念 → 行動",
+  tag:"知道、相信、然後真的去做",
+  summary:"先把事情弄懂（認知），形成自己願意相信的價值（信念），最後把它落實成日常行動。",
+  ex:[
+   {t:"把「我數學就是不行」換成成長型思維",s:["認識「固定型 vs 成長型思維」：能力可以靠練習長出來。","開始相信「我的數學會因為刻意練習而進步」，而非天生註定。","每天固定練 3 題、訂正錯題、主動發問，用小成功累積信心。"],
+     ai:["請 AI 用簡單例子解釋成長型思維與大腦可塑性。","讓 AI 出由易到難的階梯式題目，累積成功經驗。","解題後請 AI 即時回饋哪裡卡關、下一步怎麼補。"]},
+   {t:"從關心環境到真的做環保",s:["了解氣候變遷與個人碳足跡的事實，分辨可信資訊與假訊息。","相信「個人的小行動累積起來會有影響」。","從自備水壺、搭乘大眾運輸做起，並在班上發起永續小專案。"],
+     ai:["用 AI 幫你估算個人碳足跡，看見改變的空間。","請 AI 整理科學來源、協助辨別環保的不實說法。","讓 AI 協助規劃班級永續行動的步驟與分工。"]},
+   {t:"建立自己的金錢觀與理財習慣",s:["搞懂「需要 vs 想要」、儲蓄與複利的基本概念。","相信「延遲享受、先存再花」是值得的選擇。","把零用錢分成存款與花費，開始每天記帳。"],
+     ai:["請 AI 用複利試算讓你看見長期存錢的威力。","讓 AI 分析消費紀錄，分類「需要」與「想要」。","把 AI 當記帳小幫手，每天提醒並做月結整理。"]}
+  ]},
+ {code:"03",accent:"#3D5AF1",triad:["任務","步驟","檢核"],name:"任務 → 步驟 → 檢核",
+  tag:"把大事拆小，做完還要檢查",
+  summary:"面對一件要完成的事：先界定任務範圍，拆成可執行的步驟，最後用檢核表確認真的做到位。",
+  ex:[
+   {t:"完成一份分組報告",s:["任務：完成一份主題明確、有引用來源的小組書面報告。","步驟：查資料 → 擬大綱 → 分工撰寫 → 整理引用 → 潤稿排版。","檢核：用清單確認內容完整、來源正確、格式統一、無錯字。"],
+     ai:["請 AI 把任務拆解成步驟並排出時程。","讓 AI 幫你發想大綱、整理參考資料（記得自己查證）。","用 AI 產生「交件前檢查清單」做最後把關。"]},
+   {t:"兩週內準備好段考",s:["任務：在兩週內把五科準備到能上場應考。","步驟：排讀書計畫 → 分科複習 → 做考古題 → 訂正弱點。","檢核：每天自我小測，標記哪些單元已掌握、哪些還要補。"],
+     ai:["請 AI 依你的時間與科目自動生成讀書計畫表。","讓 AI 出練習題並即時測驗你的理解。","用 AI 以「間隔複習」幫你追蹤並回顧弱點。"]},
+   {t:"執行一學期的自主學習計畫",s:["任務：用一學期學會一項新技能（例如影片剪輯）。","步驟：看教學 → 動手練 → 完成第一支作品 → 收集回饋再修。","檢核：每週寫進度紀錄，對照里程碑是否達成。"],
+     ai:["請 AI 推薦學習路徑與適合初學者的資源。","把作品給 AI，請它指出可改進的具體地方。","讓 AI 產生每週檢核表，幫你維持節奏。"]}
+  ]},
+ {code:"04",accent:"#B5179E",triad:["目標","策略","驗證"],name:"目標 → 策略 → 驗證",
+  tag:"訂得到、做得到、還要量得到",
+  summary:"設一個明確可衡量的目標，規劃達成它的策略，並用實際數據或結果驗證是否真的進步。",
+  ex:[
+   {t:"提升英文口說能力",s:["目標：學期末能就一個主題流暢地說 3 分鐘（明確、可衡量）。","策略：每天跟讀、固定對話練習、累積主題單字。","驗證：每月錄音一次，比較流暢度與用字的進步。"],
+     ai:["讓 AI 當你的口說練習夥伴，隨時陪你對話。","請 AI 評估你的發音與流暢度並給具體分數。","用 AI 把每月成績畫成進步曲線，看見成長。"]},
+   {t:"達成一個體能小目標",s:["目標：八週內能不停歇連續跑完 3 公里。","策略：採漸進式訓練，搭配充足睡眠與規律作息。","驗證：定期計時測驗，記錄配速與耐力的變化。"],
+     ai:["請 AI 設計循序漸進、不勉強的訓練計畫。","讓 AI 分析跑步數據，適時調整強度。","用 AI 提醒休息與恢復，避免運動傷害。"]},
+   {t:"探索未來方向（選組／生涯）",s:["目標：在期限前對自然組／社會組做出有信心的選擇。","策略：探索興趣、訪談學長姐與師長、實際試讀相關內容。","驗證：用自訂判斷標準檢視選擇，並小規模試做來測試。"],
+     ai:["請 AI 整理各領域的學習內容與職涯樣貌供你比較。","讓 AI 用興趣問答幫你釐清傾向（決定仍由你做）。","請 AI 模擬不同選擇後的學習路徑，協助你預想。"]}
+  ]}
+];
+
+const arrowSVG='<svg viewBox="0 0 26 26" fill="none"><path class="flow" d="M2 13h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 8l6 5-6 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+
+const selector=document.querySelector('.selector');
+const ws=document.getElementById('ws');
+let active=0, filter=null;
+
+DATA.forEach((m,i)=>{
+  const b=document.createElement('button');
+  b.className='mod-btn';b.style.setProperty('--mc',m.accent);
+  b.setAttribute('role','tab');b.setAttribute('aria-selected',i===0);
+  b.id='tab-'+i;b.tabIndex=i===0?0:-1;
+  b.innerHTML=`<span class="mod-code">MODULE ${m.code}</span>
+    <div class="mod-triad">${m.triad.join(' · ')}</div>
+    <div class="mod-tag">${m.tag}</div>`;
+  b.addEventListener('click',()=>select(i));
+  b.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowLeft'){
+      e.preventDefault();
+      const n=(i+(e.key==='ArrowRight'?1:DATA.length-1))%DATA.length;
+      select(n);document.getElementById('tab-'+n).focus();
+    }
+  });
+  selector.appendChild(b);
+});
+
+function render(i){
+  const m=DATA[i];
+  document.documentElement.style.setProperty('--accent',m.accent);
+  document.documentElement.style.setProperty('--accent-soft',m.accent+'1f');
+  filter=null;ws.removeAttribute('data-filter');
+
+  const cycle=m.triad.map((t,k)=>
+    `<div class="stage"><button class="stage-chip" data-k="${k}" aria-pressed="false">
+       <span class="num">STAGE ${k+1}</span>${t}</button></div>`
+  ).join(`<div class="arrow" aria-hidden="true">${arrowSVG}</div>`);
+
+  const examples=m.ex.map((e,n)=>`
+    <article class="ex" style="animation-delay:${n*0.06}s">
+      <div class="ex-head"><span class="ex-idx">${n+1}</span><h3 class="ex-topic">${e.t}</h3></div>
+      ${e.s.map((txt,k)=>`<div class="stage-row" data-s="${k}">
+          <span class="lbl">${m.triad[k]}</span><span class="txt">${txt}</span></div>`).join('')}
+      <div class="ai-panel">
+        <div class="ai-h"><span class="ai-chip">AI</span>AI 的角色與功能</div>
+        <ul class="ai-list">${e.ai.map(a=>`<li>${a}</li>`).join('')}</ul>
+      </div>
+    </article>`).join('');
+
+  ws.innerHTML=`
+    <div class="ws-head">
+      <span class="ws-code">${m.code}</span>
+      <span class="ws-name">${m.name}</span>
+      <span class="ws-tag">${m.tag}</span>
+    </div>
+    <p class="ws-summary">${m.summary}</p>
+    <div class="cycle-wrap">
+      <p class="cycle-label">三段流程 · 點階段可聚焦下方對應內容</p>
+      <div class="cycle">${cycle}</div>
+      <div class="loopback"><span class="ln"></span>做完回頭再覺察，持續循環<span class="ln"></span></div>
+    </div>
+    <div class="examples">${examples}</div>`;
+
+  ws.querySelectorAll('.stage-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const k=+chip.dataset.k;
+      if(filter===k){filter=null;ws.removeAttribute('data-filter');}
+      else{filter=k;ws.setAttribute('data-filter',k);}
+      ws.querySelectorAll('.stage-chip').forEach(c=>
+        c.setAttribute('aria-pressed', (+c.dataset.k===filter)));
+    });
+  });
+}
+
+function select(i){
+  active=i;
+  selector.querySelectorAll('.mod-btn').forEach((b,k)=>{
+    b.setAttribute('aria-selected',k===i);b.tabIndex=k===i?0:-1;
+  });
+  render(i);
+}
+
+select(0);
+</script>
+</body>
+</html>

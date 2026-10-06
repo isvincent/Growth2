@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI融入學習行動架構：互動式單頁網頁</title>
+<style>
+:root{--bg:#f8fafc;--ink:#0f172a;--muted:#64748b;--card:#ffffff;--line:#e2e8f0;--accent:#2563eb}
+*{box-sizing:border-box} body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:radial-gradient(circle at top left,#dbeafe 0,#f8fafc 28%,#fff 100%);color:var(--ink);}
+header{padding:42px 24px 26px;max-width:1180px;margin:auto} .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center} h1{font-size:clamp(30px,4.2vw,54px);line-height:1.08;margin:0 0 14px;font-weight:900;letter-spacing:-.04em} .lead{font-size:18px;line-height:1.8;color:#475569;margin:0} .panel{background:rgba(255,255,255,.78);border:1px solid rgba(226,232,240,.9);border-radius:28px;padding:22px;box-shadow:0 20px 60px rgba(15,23,42,.08);backdrop-filter:blur(12px)}
+.loop{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;text-align:center} .loop div{padding:16px;border-radius:20px;background:#f1f5f9;font-weight:800} .arrow{color:#94a3b8;font-size:24px;font-weight:900}
+.toolbar{position:sticky;top:0;z-index:10;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-block:1px solid var(--line)} .toolbarInner{max-width:1180px;margin:auto;padding:14px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center} input{flex:1;min-width:220px;border:1px solid var(--line);border-radius:999px;padding:13px 18px;font-size:16px;background:white} button{border:0;cursor:pointer} .filter,.reset{border-radius:999px;padding:12px 15px;background:white;border:1px solid var(--line);font-weight:800;color:#334155} .filter.active{background:var(--c);color:white;border-color:var(--c)} .reset{background:#0f172a;color:white}
+main{max-width:1180px;margin:0 auto;padding:26px 24px 60px} .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px} .stat{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,.05)} .stat b{font-size:28px;display:block} .stat span{color:var(--muted);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px} .card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 14px 40px rgba(15,23,42,.07);transition:.25s transform,.25s box-shadow} .card:hover{transform:translateY(-4px);box-shadow:0 22px 56px rgba(15,23,42,.12)} .cardTop{display:flex;justify-content:space-between;gap:10px;align-items:center} .badge{background:color-mix(in srgb,var(--c) 12%,white);color:var(--c);padding:7px 10px;border-radius:999px;font-size:13px;font-weight:900} .num{font-size:13px;color:#64748b;font-weight:800} h3{font-size:21px;margin:16px 0 8px} .scene{color:#475569;line-height:1.7;min-height:58px} .flow{display:grid;gap:10px;margin:14px 0} .flow div{display:grid;grid-template-columns:44px 1fr;gap:10px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:16px;padding:10px} .flow b{display:grid;place-items:center;background:#e2e8f0;border-radius:12px} .flow span{line-height:1.65;color:#334155} details{border-top:1px solid var(--line);padding-top:10px} summary{font-weight:900;color:#0f172a;cursor:pointer} details p{line-height:1.7;color:#334155}
+.map{margin:32px 0;background:#0f172a;color:white;border-radius:30px;padding:26px;overflow:hidden} .map h2{margin:0 0 18px} .mapGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px} .mapItem{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:16px} .mapItem b{display:block;font-size:18px;margin-bottom:8px} .mapItem p{margin:0;color:#cbd5e1;line-height:1.6}
+footer{max-width:1180px;margin:auto;padding:0 24px 40px;color:#64748b;line-height:1.7} .hidden{display:none!important}
+@media(max-width:900px){.hero,.grid,.stats,.mapGrid{grid-template-columns:1fr} .loop{grid-template-columns:1fr} .arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<header>
+ <section class="hero">
+  <div>
+   <h1>AI融入學習行動架構</h1>
+   <p class="lead">以四組架構建立12個實際可運用情境，讓學生先提出想法，AI再協助整理、檢查、修正與建議，最後回到人來判斷、行動與驗證。</p>
+  </div>
+  <div class="panel">
+   <div class="loop"><div>人<br><small>覺察與輸入</small></div><span class="arrow">→</span><div>AI<br><small>協作與回饋</small></div><span class="arrow">→</span><div>人<br><small>判斷與改變</small></div></div>
+  </div>
+ </section>
+</header>
+<nav class="toolbar"><div class="toolbarInner"><input id="search" placeholder="搜尋情境、AI功能或關鍵字..." /><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="awareness" style="--c:#2563eb">🔎 覺察、省思、改變</button><button class="filter" data-filter="cognition" style="--c:#7c3aed">🧠 認知、信念、行動</button><button class="filter" data-filter="task" style="--c:#059669">✅ 任務、步驟、檢核</button><button class="filter" data-filter="goal" style="--c:#ea580c">🎯 目標、策略、驗證</button><button class="reset" id="expandAll">展開重點</button></div></nav>
+<main>
+ <section class="stats">
+  <div class="stat"><b>4</b><span>學習行動架構</span></div><div class="stat"><b>12</b><span>實際應用實例</span></div><div class="stat"><b>3</b><span>人 → AI → 人流程</span></div><div class="stat"><b>1</b><span>檢核／驗證證據</span></div>
+ </section>
+ <section class="map"><h2>四個架構的使用焦點</h2><div class="mapGrid">
+ <div class="mapItem"><b>🔎 覺察、省思、改變</b><p>先辨識自己的狀態與問題，再透過提問、紀錄與回饋進行省思，最後形成可執行的小改變。</p></div><div class="mapItem"><b>🧠 認知、信念、行動</b><p>檢視自己如何理解任務與看待能力，修正限制性信念，讓具體行動支持新的學習經驗。</p></div><div class="mapItem"><b>✅ 任務、步驟、檢核</b><p>將大任務轉化為明確步驟，搭配檢核表、範例與回饋，降低執行門檻並提升完成品質。</p></div><div class="mapItem"><b>🎯 目標、策略、驗證</b><p>設定具體目標，選擇合適策略，透過證據驗證效果，再根據結果調整下一步。</p></div>
+ </div></section>
+ <section class="grid" id="cards">
+    <article class="card" data-framework="awareness" data-keywords="學習習慣診斷與改善 學生常覺得自己很努力，但成績沒有明顯進步。 資料整理、模式辨識、反思提問、改善策略建議">
+      <div class="cardTop">
+        <span class="badge" style="--c:#2563eb">🔎 覺察、省思、改變</span>
+        <span class="num">實例 1</span>
+      </div>
+      <h3>學習習慣診斷與改善</h3>
+      <p class="scene">學生常覺得自己很努力，但成績沒有明顯進步。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生先記錄一週讀書時間、分心情況、作業完成狀態與考後感受。</span></div>
+        <div><b>AI</b><span>AI協助整理紀錄，找出分心時段、低效率讀書方式與常見錯誤型態，並提出改善建議。</span></div>
+        <div><b>人</b><span>學生選定一項最容易執行的改變，例如把手機放到客廳、使用25分鐘專注法，並於一週後回顧成效。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>資料整理、模式辨識、反思提問、改善策略建議</p>
+        <p><strong>檢核／驗證：</strong>能說出自己最大的學習卡點，並提出一個可觀察的小改變。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="awareness" data-keywords="情緒觸發點覺察 學生在小組合作時容易生氣或沉默，影響合作品質。 情緒分類、事件拆解、同理回饋、溝通句型生成">
+      <div class="cardTop">
+        <span class="badge" style="--c:#2563eb">🔎 覺察、省思、改變</span>
+        <span class="num">實例 2</span>
+      </div>
+      <h3>情緒觸發點覺察</h3>
+      <p class="scene">學生在小組合作時容易生氣或沉默，影響合作品質。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生描述最近一次衝突事件，寫下當時的想法、感受、行為與後果。</span></div>
+        <div><b>AI</b><span>AI扮演情緒教練，協助區分事實、解讀與情緒，提出可能的觸發點與替代表達方式。</span></div>
+        <div><b>人</b><span>學生挑選一句下次可使用的溝通句，例如「我需要再確認分工，避免大家重複做」。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>情緒分類、事件拆解、同理回饋、溝通句型生成</p>
+        <p><strong>檢核／驗證：</strong>能區分「發生什麼事」與「我怎麼解讀」，並設計新的回應方式。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="awareness" data-keywords="課堂參與度自我觀察 教師想提升學生在課堂中的主動提問與回應。 問卷彙整、趨勢視覺化、原因推論、教學策略建議">
+      <div class="cardTop">
+        <span class="badge" style="--c:#2563eb">🔎 覺察、省思、改變</span>
+        <span class="num">實例 3</span>
+      </div>
+      <h3>課堂參與度自我觀察</h3>
+      <p class="scene">教師想提升學生在課堂中的主動提問與回應。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生在每堂課後用1到5分評估自己的專注、發問、互動與理解程度。</span></div>
+        <div><b>AI</b><span>AI彙整班級匿名資料，產生參與度趨勢，並提出可能影響參與的因素。</span></div>
+        <div><b>人</b><span>教師與學生共同討論改善策略，例如增加等待時間、使用匿名提問卡或小組先討論再發表。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>問卷彙整、趨勢視覺化、原因推論、教學策略建議</p>
+        <p><strong>檢核／驗證：</strong>能根據資料選擇一項課堂參與改善策略並追蹤變化。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="cognition" data-keywords="從「我不會數學」到「我可以拆步驟」 學生遇到數學題容易放棄，認為自己沒有數學天分。 步驟拆解、錯誤提示、信念改寫、漸進式鷹架">
+      <div class="cardTop">
+        <span class="badge" style="--c:#7c3aed">🧠 認知、信念、行動</span>
+        <span class="num">實例 1</span>
+      </div>
+      <h3>從「我不會數學」到「我可以拆步驟」</h3>
+      <p class="scene">學生遇到數學題容易放棄，認為自己沒有數學天分。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生寫下卡住的題目、自己腦中出現的話，以及曾經嘗試的方法。</span></div>
+        <div><b>AI</b><span>AI協助把題目拆成小步驟，指出學生已經會的部分，並改寫負面信念。</span></div>
+        <div><b>人</b><span>學生先完成第一個小步驟，再用AI檢查解題流程是否合理。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>步驟拆解、錯誤提示、信念改寫、漸進式鷹架</p>
+        <p><strong>檢核／驗證：</strong>能把「我不會」改成「我先做哪一步」，並完成至少一個可行動作。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="cognition" data-keywords="閱讀理解策略轉換 學生看完文章卻抓不到重點，誤以為閱讀就是從頭看到尾。 重點提取、摘要生成、提問引導、閱讀策略建議">
+      <div class="cardTop">
+        <span class="badge" style="--c:#7c3aed">🧠 認知、信念、行動</span>
+        <span class="num">實例 2</span>
+      </div>
+      <h3>閱讀理解策略轉換</h3>
+      <p class="scene">學生看完文章卻抓不到重點，誤以為閱讀就是從頭看到尾。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生先標記不懂的詞句與覺得重要的段落。</span></div>
+        <div><b>AI</b><span>AI引導學生使用標題預測、段落摘要、關鍵詞標示與自我提問。</span></div>
+        <div><b>人</b><span>學生重讀文章後，產出三句摘要與一個自己的問題。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>重點提取、摘要生成、提問引導、閱讀策略建議</p>
+        <p><strong>檢核／驗證：</strong>能說明自己使用哪一種閱讀策略，而不是只說「再看一次」。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="cognition" data-keywords="建立發表信心 學生害怕上台報告，擔心講錯或被同學笑。 稿件生成、模擬聽眾提問、語氣調整、回饋建議">
+      <div class="cardTop">
+        <span class="badge" style="--c:#7c3aed">🧠 認知、信念、行動</span>
+        <span class="num">實例 3</span>
+      </div>
+      <h3>建立發表信心</h3>
+      <p class="scene">學生害怕上台報告，擔心講錯或被同學笑。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生列出害怕的原因與過去成功完成的小經驗。</span></div>
+        <div><b>AI</b><span>AI協助辨識過度推論，產生3分鐘報告稿、練習提問與鼓勵性回饋。</span></div>
+        <div><b>人</b><span>學生先對同桌練習一次，再依回饋修改開場與結尾。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>稿件生成、模擬聽眾提問、語氣調整、回饋建議</p>
+        <p><strong>檢核／驗證：</strong>能完成一次低風險練習，並修正一個表達細節。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="task" data-keywords="專題報告製作流程 學生要完成一份環境議題專題報告，但不知道從哪裡開始。 任務分解、進度規劃、資料整理、檢核表產生">
+      <div class="cardTop">
+        <span class="badge" style="--c:#059669">✅ 任務、步驟、檢核</span>
+        <span class="num">實例 1</span>
+      </div>
+      <h3>專題報告製作流程</h3>
+      <p class="scene">學生要完成一份環境議題專題報告，但不知道從哪裡開始。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生先確定主題，例如校園減塑，並列出已知資料與想了解的問題。</span></div>
+        <div><b>AI</b><span>AI協助規劃任務流程：定題、蒐集資料、整理重點、製作圖表、撰寫結論、練習發表。</span></div>
+        <div><b>人</b><span>學生依檢核表逐項完成，最後請同儕檢查資料來源與論點是否清楚。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>任務分解、進度規劃、資料整理、檢核表產生</p>
+        <p><strong>檢核／驗證：</strong>每一階段都有明確產出，例如一張資料表、一段結論或一頁簡報。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="task" data-keywords="作文修訂流程 學生寫完作文後，只會檢查錯字，無法進一步提升內容。 文章診斷、修辭建議、結構檢查、錯字校對">
+      <div class="cardTop">
+        <span class="badge" style="--c:#059669">✅ 任務、步驟、檢核</span>
+        <span class="num">實例 2</span>
+      </div>
+      <h3>作文修訂流程</h3>
+      <p class="scene">學生寫完作文後，只會檢查錯字，無法進一步提升內容。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生先完成初稿，標記最想改善的地方，例如開頭、例子或結尾。</span></div>
+        <div><b>AI</b><span>AI依照「內容、結構、語句、錯字」四層次提供修改建議，不直接代寫整篇。</span></div>
+        <div><b>人</b><span>學生選擇其中三項建議自行修改，並保留修改前後版本比較。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>文章診斷、修辭建議、結構檢查、錯字校對</p>
+        <p><strong>檢核／驗證：</strong>能說明自己修改了哪些地方，以及修改後為什麼更好。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="task" data-keywords="實驗操作檢核 自然課進行實驗時，學生容易漏步驟或忘記記錄變因。 流程檢核、安全提醒、變因辨識、紀錄格式設計">
+      <div class="cardTop">
+        <span class="badge" style="--c:#059669">✅ 任務、步驟、檢核</span>
+        <span class="num">實例 3</span>
+      </div>
+      <h3>實驗操作檢核</h3>
+      <p class="scene">自然課進行實驗時，學生容易漏步驟或忘記記錄變因。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生閱讀實驗說明，先圈出器材、步驟、控制變因與安全提醒。</span></div>
+        <div><b>AI</b><span>AI將實驗流程轉成檢核表，並提醒可能的風險與常見錯誤。</span></div>
+        <div><b>人</b><span>學生實作時逐項勾選，實驗後回填觀察結果與異常狀況。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>流程檢核、安全提醒、變因辨識、紀錄格式設計</p>
+        <p><strong>檢核／驗證：</strong>能完整記錄實驗條件、觀察結果與是否有漏做步驟。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="goal" data-keywords="英語單字學習目標 學生想增加單字量，但常背了又忘。 目標拆解、間隔複習、測驗生成、錯誤分析">
+      <div class="cardTop">
+        <span class="badge" style="--c:#ea580c">🎯 目標、策略、驗證</span>
+        <span class="num">實例 1</span>
+      </div>
+      <h3>英語單字學習目標</h3>
+      <p class="scene">學生想增加單字量，但常背了又忘。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生設定兩週目標：每天學10個單字，並記錄複習次數與小考結果。</span></div>
+        <div><b>AI</b><span>AI協助安排間隔複習、產生例句、設計小測驗，並分析哪些單字容易忘。</span></div>
+        <div><b>人</b><span>學生依測驗結果調整策略，例如把易錯字做成圖像聯想或造句練習。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>目標拆解、間隔複習、測驗生成、錯誤分析</p>
+        <p><strong>檢核／驗證：</strong>兩週後能用測驗結果驗證策略是否有效，而不是只看背誦時間。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="goal" data-keywords="班級閱讀推動計畫 教師希望提升班級每月閱讀量與閱讀分享品質。 目標管理、回饋單設計、文本摘要、資料分析">
+      <div class="cardTop">
+        <span class="badge" style="--c:#ea580c">🎯 目標、策略、驗證</span>
+        <span class="num">實例 2</span>
+      </div>
+      <h3>班級閱讀推動計畫</h3>
+      <p class="scene">教師希望提升班級每月閱讀量與閱讀分享品質。</p>
+      <div class="flow">
+        <div><b>人</b><span>教師與學生共同設定目標：每人每月讀一本書，完成一張閱讀回饋卡。</span></div>
+        <div><b>AI</b><span>AI協助設計閱讀回饋格式、分類書籍難度，並彙整學生心得中的共同主題。</span></div>
+        <div><b>人</b><span>教師根據完成率與心得品質調整策略，例如提供書單分級或安排同書討論。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>目標管理、回饋單設計、文本摘要、資料分析</p>
+        <p><strong>檢核／驗證：</strong>用完成率、心得深度與討論參與度驗證推動效果。</p>
+      </details>
+    </article>
+    <article class="card" data-framework="goal" data-keywords="體適能改善行動 學生想改善跑步耐力，但容易三分鐘熱度。 訓練規劃、紀錄追蹤、風險提醒、成效分析">
+      <div class="cardTop">
+        <span class="badge" style="--c:#ea580c">🎯 目標、策略、驗證</span>
+        <span class="num">實例 3</span>
+      </div>
+      <h3>體適能改善行動</h3>
+      <p class="scene">學生想改善跑步耐力，但容易三分鐘熱度。</p>
+      <div class="flow">
+        <div><b>人</b><span>學生設定四週目標，例如800公尺跑步時間進步20秒，並記錄每次練習。</span></div>
+        <div><b>AI</b><span>AI依學生狀況建議循序漸進的訓練策略，提醒暖身、恢復與安全原則。</span></div>
+        <div><b>人</b><span>學生每週檢視紀錄，若過度疲累則調整強度，若穩定進步則小幅增加訓練量。</span></div>
+      </div>
+      <details>
+        <summary>查看AI功能與檢核方式</summary>
+        <p><strong>AI功能：</strong>訓練規劃、紀錄追蹤、風險提醒、成效分析</p>
+        <p><strong>檢核／驗證：</strong>以跑步時間、主觀疲勞程度與練習穩定度驗證策略。</p>
+      </details>
+    </article></section>
+</main>
+<footer>教學提醒：請引導學生保留「原本想法、AI建議、最後判斷」三種痕跡，避免只複製AI答案，才能形成可評量的學習歷程。</footer>
+<script>
+const cards=[...document.querySelectorAll('.card')];
+const filters=[...document.querySelectorAll('.filter')];
+const search=document.querySelector('#search');
+let current='all';
+function apply(){
+ const q=search.value.trim().toLowerCase();
+ cards.forEach(card=>{
+  const okFilter=current==='all'||card.dataset.framework===current;
+  const okText=!q||card.dataset.keywords.toLowerCase().includes(q)||card.innerText.toLowerCase().includes(q);
+  card.classList.toggle('hidden',!(okFilter&&okText));
+ });
+}
+filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(b=>b.classList.remove('active'));btn.classList.add('active');current=btn.dataset.filter;apply();}));
+search.addEventListener('input',apply);
+document.querySelector('#expandAll').addEventListener('click',()=>{
+ const anyClosed=[...document.querySelectorAll('details')].some(d=>!d.open);
+ document.querySelectorAll('details').forEach(d=>d.open=anyClosed);
+ document.querySelector('#expandAll').textContent=anyClosed?'收合重點':'展開重點';
+});
+</script>
+</body></html>
